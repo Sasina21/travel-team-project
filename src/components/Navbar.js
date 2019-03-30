@@ -7,7 +7,7 @@ import { FaSignature} from "react-icons/fa";
 class NavbarTemplate extends Component {
 
     render(){
-        console.log('state from nav ' + this.props.isSignedIn)
+        // console.log('state from nav ' + this.props.isSignedIn)
         return(
             <div>
                 <Navbar bg="warning" expand="lg" >
@@ -16,8 +16,10 @@ class NavbarTemplate extends Component {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
-                            <Nav.Link href="/MyTrips" style={{paddingRight: "10px"}}>My Trips</Nav.Link>
-                            <Nav.Link href="/CreateTrip">Create New Trip</Nav.Link>
+                            <Link to="/MyTrips"><Navbar.Text style={{paddingRight: "10px"}}> My Trips</Navbar.Text></Link>
+                            <Link to="/CreateTrip"><Navbar.Text style={{paddingRight: "10px"}}> Create New Trip</Navbar.Text></Link>
+                            {/* <Nav.Link href="/MyTrips" style={{paddingRight: "10px"}}>My Trips</Nav.Link> */}
+                            {/* <Nav.Link href="/CreateTrip">Create New Trip</Nav.Link> */}
                         </Nav>
                         <Form inline>
                         <Navbar.Text style={{paddingRight: "10px"}}><a href="/Profile">Mark Otto</a></Navbar.Text>

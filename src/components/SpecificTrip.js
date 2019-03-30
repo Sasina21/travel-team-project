@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Form} from 'react-bootstrap'
 import Navbar from './Navbar'
 import Table from './Table'
-
+import { Link } from 'react-router-dom'
 
 
 class CreateTrip extends Component {
@@ -16,8 +16,8 @@ class CreateTrip extends Component {
                 <Table></Table>
 
             <Form.Group style={{textAlign: "end"}}>
-                <Button href="/DetailCreateTrip" variant="warning" style={{marginRight: "10px"}}>Edit</Button>
-                <Button href="/ImitateTrip" variant="dark">Imitate</Button>
+                <Link to="/DeatailCreateTrip"><Button variant="warning" style={{marginRight: "10px"}}>Edit</Button></Link>
+                <Link to="/ImitateTrip"><Button variant="dark">Start Trip</Button></Link>
             </Form.Group>
 
             </div>

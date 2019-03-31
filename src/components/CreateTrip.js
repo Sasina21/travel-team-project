@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import firebase from '../firebase'
-import { Button, Form, Modal} from 'react-bootstrap'
+import { Button, Form, Modal, ProgressBar, Image} from 'react-bootstrap'
 import Navbar from './Navbar'
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom'
+// import { FaCreativeCommonsSamplingPlus } from 'react-icons/fa';
 
 
 
@@ -18,7 +19,7 @@ class CreateTrip extends Component {
       showForm: false,
       idTrip: '',
       isSignedIn: false,
-    };
+    }
     this.insertDataTrip = this.insertDataTrip.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this)
@@ -83,6 +84,7 @@ class CreateTrip extends Component {
     this.setState({ showForm: false });
   }
 
+
     render(){
       if (this.state.isSignedIn){
         return(
@@ -90,7 +92,7 @@ class CreateTrip extends Component {
             <Navbar/>
             <div className="container" style={{marginTop: "30px"}}>
               <Form>
-                
+
                 <Form.Group >
                   <Form.Label>Name Trip</Form.Label>
                   <Form.Control type="text" autoComplete="off" id="nameTrip" placeholder="Name Trip" />

@@ -44,7 +44,6 @@ class MyTrips extends Component {
     }
     
     render(){
-        
         if (this.state.isSignedIn){
             return(
                 <div>

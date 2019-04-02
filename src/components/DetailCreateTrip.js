@@ -22,6 +22,8 @@ class DetailCreateTrip extends Component {
       image: null,
       url: '',
       progress: 0,
+      myid: '',
+      idCompany:'',
     };
     this.handleChangePic = this.handleChangePic.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
@@ -31,7 +33,9 @@ class DetailCreateTrip extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.insertDetailData = this.insertDetailData.bind(this)
     this.componentDidMount = this.componentDidMount.bind(this)
+    this.getInfo = this.getInfo.bind(this)
   }
+
   componentDidMount() {
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
         (user) => this.setState({isSignedIn: !!user})
@@ -120,7 +124,7 @@ class DetailCreateTrip extends Component {
       var startTime =  document.getElementById('startTime').value;
       var endTime =  document.getElementById('endTime').value;
       var alertTime = document.querySelector('input[name="radio1"]:checked').value;
-      let dbCon = firebase.database().ref('Trips/' + this.props.location.state.idTrip +'/detail');
+      let dbCon = firebase.database().ref('Companies/' + this.state.idCompany +'/Trips/' + this.props.location.state.idTrip + '/Detail');
         var idTripDetail = dbCon.push({
           bookDay: bookDay,
           location: location,
@@ -128,10 +132,13 @@ class DetailCreateTrip extends Component {
           endTime: endTime,
           alertTime: alertTime,
           description: description,
+          picture: this.state.url,
         }).key;
     
       this.setState({
           idTripDetail: idTripDetail,
+          url: '',
+          progress: 0,
       });
       document.getElementById("myForm").reset();
     }else{
@@ -149,6 +156,26 @@ class DetailCreateTrip extends Component {
     return arr; 
   }
 
+  componentWillUpdate(nextProps, nextState){
+    if (nextState.isSignedIn === true && this.state.isSignedIn === false) {
+      this.getInfo()
+    }
+  }
+
+  async getInfo(){
+    var user = firebase.auth().currentUser;
+    this.setState({
+      myid: user.uid,
+    })
+    var id_company= await firebase.database().ref("Guides/" + user.uid );
+    id_company.once("value")
+          .then(snapshot => {
+            this.setState({
+              idCompany: snapshot.val().Id_company
+            })
+          });
+  }
+
     render(){
       // console.log('yess' + this.props.location.state.country);
       if (this.state.isSignedIn){
@@ -157,7 +184,7 @@ class DetailCreateTrip extends Component {
           <div>
           <Navbar></Navbar>
           <div className="container" style={{marginTop: "30px"}}>
-            <Form>
+            <Form id="myForm">
               <Form.Group>
                   <Form.Control size="lg"  id="bookDay" as="select">
                   {this.buildOptionsDuration()}

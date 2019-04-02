@@ -13,6 +13,7 @@ class CreateTrip extends Component {
     super(props);
     this.state={
       myid: '',
+      idCompany: '',
       duration: '',
       country: '',
       checkinsertDataTrip: false,
@@ -23,8 +24,9 @@ class CreateTrip extends Component {
     this.insertDataTrip = this.insertDataTrip.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this)
+    this.getInfo = this.getInfo.bind(this)
   }
-
+  
   componentDidMount() {
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
         (user) => this.setState({isSignedIn: !!user})
@@ -45,30 +47,40 @@ class CreateTrip extends Component {
       return true
     }
   }
-  async insertDataUser(myid, idTrip, country){
-    let dbCon = firebase.database().ref('Creators/'+ myid).child(idTrip);
-      dbCon.set({
-        country: country,
-      });
+
+  componentWillUpdate(nextProps, nextState){
+    if (nextState.isSignedIn === true && this.state.isSignedIn === false) {
+      this.getInfo()
+    }
   }
+
+  async getInfo(){
+    var user = firebase.auth().currentUser;
+    this.setState({
+      myid: user.uid,
+    })
+    var id_company= await firebase.database().ref("Guides/" + user.uid );
+    id_company.once("value")
+          .then(snapshot => {
+            this.setState({
+              idCompany: snapshot.val().Id_company
+            })
+          });
+  }
+
   async insertDataTrip(){
     if(this.notNullCheck()){
-      console.log("complete")
-      var user = firebase.auth().currentUser;
       var nameTrip =  await document.getElementById('nameTrip').value
       var country =  await document.getElementById('country').value
       var duration = await parseInt(document.getElementById('duration').value)
-      let dbCon = firebase.database().ref('/Trips')
+      let dbCon = firebase.database().ref('/Companies/' + this.state.idCompany + '/Trips/')
       var idTrip = dbCon.push({
-        creator: user.uid,
         nameTrip: nameTrip,
         country: country,
         duration: duration,
       }).key;
       this.setState({
-      myid: user.uid,
       duration: duration,
-      country: country,
       checkinsertDataTrip: true,
       idTrip: idTrip,
    })
@@ -84,6 +96,7 @@ class CreateTrip extends Component {
     this.setState({ showForm: false });
   }
 
+  
 
     render(){
       if (this.state.isSignedIn){
@@ -363,16 +376,15 @@ class CreateTrip extends Component {
                 <Button onClick={this.insertDataTrip} variant="warning" type="button">Next</Button>
                 </Form.Group>
               </Form>
-              {this.state.checkinsertDataTrip && this.insertDataUser(this.state.myid, this.state.idTrip, this.state.country) &&(  
+              {this.state.checkinsertDataTrip && 
               <Redirect push to={{
               pathname: '/DetailCreateTrip',
               state:{
                 idTrip: this.state.idTrip ,
-                country: this.state.country,
                 duration: this.state.duration,
               }
             }}/>
-            )}
+            }
             </div>
             <Modal show={this.state.showForm} onHide={this.handleClose}>
               <Modal.Header style={{backgroundColor: '#C21807', color: "white"}} closeButton>

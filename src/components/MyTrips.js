@@ -11,9 +11,12 @@ class MyTrips extends Component {
         this.state={
             dataTrip: null,
             isSignedIn: false,
+            myid: '',
+            idCompany:'',
         }
         this.readData = this.readData.bind(this)
         this.componentDidMount = this.componentDidMount.bind(this)
+        this.getInfo = this.getInfo.bind(this)
         
     };
     componentWillMount(){
@@ -27,21 +30,41 @@ class MyTrips extends Component {
       }
 
     componentWillUnmount() {
-    this.unregisterAuthObserver();
-    
+        this.unregisterAuthObserver();
     }
+
     async readData(){
-        var rootRef = await firebase.database().ref("Trips/");
-        rootRef.once("value")
-            .then(snapshot => {
-                var key = snapshot.key; // null
-                // var childKey = snapshot.child("users/ada").key; // "ada"
-                // console.log(Object.values(snapshot.val()))
-                this.setState({
-                    dataTrip: Object.values(snapshot.val())
-                })
-            });
+        // var rootRef = await firebase.database().ref("Trips/");
+        // rootRef.once("value")
+        //     .then(snapshot => {
+        //         var key = snapshot.key; // null
+        //         // var childKey = snapshot.child("users/ada").key; // "ada"
+        //         // console.log(Object.values(snapshot.val()))
+        //         this.setState({
+        //             dataTrip: Object.values(snapshot.val())
+        //         })
+        //     });
     }
+
+    componentWillUpdate(nextProps, nextState){
+        if (nextState.isSignedIn === true && this.state.isSignedIn === false) {
+          this.getInfo()
+        }
+      }
+    
+      async getInfo(){
+        var user = firebase.auth().currentUser;
+        this.setState({
+          myid: user.uid,
+        })
+        var id_company= await firebase.database().ref("Guides/" + user.uid );
+        id_company.once("value")
+              .then(snapshot => {
+                this.setState({
+                  idCompany: snapshot.val().Id_company
+                })
+              });
+      }
     
     render(){
         if (this.state.isSignedIn){

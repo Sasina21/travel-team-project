@@ -14,9 +14,12 @@ class SignInScreen extends React.Component {
     super(props)
       this.state={
         isSignedIn: false,
+        myid: '',
+        idCompany: '',
       };
     
     this.componentDidMount = this.componentDidMount.bind(this)
+    this.getInfo = this.getInfo.bind(this)
   }
   // state = {
   //   isSignedIn: false // Local signed-in state.
@@ -52,10 +55,31 @@ class SignInScreen extends React.Component {
   // Make sure we un-register Firebase observers when the component unmounts.
   componentWillUnmount() {
     this.unregisterAuthObserver();
-    
   }
 
-  render() {
+  componentWillUpdate(nextProps, nextState){
+    if (nextState.isSignedIn === true && this.state.isSignedIn === false) {
+      this.getInfo()
+    }
+  }
+
+  async getInfo(){
+    var user = firebase.auth().currentUser;
+    this.setState({
+      myid: user.uid,
+    })
+    var id_company= await firebase.database().ref("Guides/" + user.uid );
+    id_company.once("value")
+          .then(snapshot => {
+            this.setState({
+              idCompany: snapshot.val().Id_company
+            })
+          });
+  }
+  
+  render() 
+
+  {
     if (!this.state.isSignedIn) {
       return (
         <div>
@@ -75,6 +99,11 @@ class SignInScreen extends React.Component {
         </div>
       );
     }
+    // setTimeout(() =>{
+    //   this.setState({
+    //     timeOut: true
+    //   })
+    // },500)
     return (
       <div>
         <Redirect to={{

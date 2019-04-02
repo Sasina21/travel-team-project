@@ -24,6 +24,8 @@ class DetailCreateTrip extends Component {
       progress: 0,
       myid: '',
       idCompany:'',
+      displayName:'',
+      picfirst: false,
     };
     this.handleChangePic = this.handleChangePic.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
@@ -59,15 +61,10 @@ class DetailCreateTrip extends Component {
     });
   }
   handleDoneShow() {
-    if(this.notNullCheck()){
+    
       this.setState({ showDone: true });
-      this.insertDetailData()
-    }else{
-      console.log("null")
-      this.setState({
-        showForm: true,
-      })
-    }
+      // this.insertDetailData()
+    
   }
  
   handleChange(date) {
@@ -124,6 +121,15 @@ class DetailCreateTrip extends Component {
       var startTime =  document.getElementById('startTime').value;
       var endTime =  document.getElementById('endTime').value;
       var alertTime = document.querySelector('input[name="radio1"]:checked').value;
+      if(!this.state.picfirst){
+        let picpath = firebase.database().ref('Companies/' + this.state.idCompany +'/Trips/' + this.props.location.state.idTrip);
+        picpath.update({
+          picfirst: this.state.url
+        })
+      this.setState({
+        picfirst: true,
+      })
+      }
       let dbCon = firebase.database().ref('Companies/' + this.state.idCompany +'/Trips/' + this.props.location.state.idTrip + '/Detail');
         var idTripDetail = dbCon.push({
           bookDay: bookDay,
@@ -166,6 +172,7 @@ class DetailCreateTrip extends Component {
     var user = firebase.auth().currentUser;
     this.setState({
       myid: user.uid,
+      displayName: user.displayName,
     })
     var id_company= await firebase.database().ref("Guides/" + user.uid );
     id_company.once("value")
@@ -182,7 +189,7 @@ class DetailCreateTrip extends Component {
         return(
 
           <div>
-          <Navbar></Navbar>
+          <Navbar displayName = {this.state.displayName} />
           <div className="container" style={{marginTop: "30px"}}>
             <Form id="myForm">
               <Form.Group>

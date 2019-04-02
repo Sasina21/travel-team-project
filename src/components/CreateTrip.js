@@ -20,6 +20,7 @@ class CreateTrip extends Component {
       showForm: false,
       idTrip: '',
       isSignedIn: false,
+      displayName:'',
     }
     this.insertDataTrip = this.insertDataTrip.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -58,6 +59,7 @@ class CreateTrip extends Component {
     var user = firebase.auth().currentUser;
     this.setState({
       myid: user.uid,
+      displayName: user.displayName,
     })
     var id_company= await firebase.database().ref("Guides/" + user.uid );
     id_company.once("value")
@@ -78,6 +80,7 @@ class CreateTrip extends Component {
         nameTrip: nameTrip,
         country: country,
         duration: duration,
+        picfirst: 'https://firebasestorage.googleapis.com/v0/b/project-190f0.appspot.com/o/b3b18c6fce4e1f9b287982184fc84e46.png?alt=media&token=eca26aa1-06bf-4374-b6ec-725cee8f8a63',
       }).key;
       this.setState({
       duration: duration,
@@ -102,7 +105,7 @@ class CreateTrip extends Component {
       if (this.state.isSignedIn){
         return(
           <div>
-            <Navbar/>
+            <Navbar displayName = {this.state.displayName} />
             <div className="container" style={{marginTop: "30px"}}>
               <Form>
 

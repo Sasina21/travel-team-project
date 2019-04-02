@@ -22,7 +22,7 @@ class NavbarTemplate extends Component {
                             {/* <Nav.Link href="/CreateTrip">Create New Trip</Nav.Link> */}
                         </Nav>
                         <Form inline>
-                        <Navbar.Text style={{paddingRight: "10px"}}><a href="/Profile">Mark Otto</a></Navbar.Text>
+                        <Navbar.Text style={{paddingRight: "10px"}}><a href="/Profile">{this.props.displayName}</a></Navbar.Text>
                         <Link to="/"><Button variant="dark" onClick={() => firebase.auth().signOut()}>Sign Out</Button></Link>
                         </Form>
                     </Navbar.Collapse>

@@ -71,18 +71,20 @@ class SignInScreen extends React.Component {
     var id_company= await firebase.database().ref("Guides/" + user.uid );
     id_company.once("value")
           .then(snapshot => {
-            this.setState({
-              idCompany: snapshot.val().Id_company
-            })
+            if(snapshot.val() != null){
+              this.setState({
+                  idCompany: snapshot.val().Id_company
+                })
+            }
           });
   }
   
   render() 
 
   {
-    if (!this.state.isSignedIn) {
+    if (!this.state.isSignedIn ) {
       return (
-        <div>
+        <div >
           <body style={{backgroundColor: "#ffca28" }} >
           <Jumbotron style={{backgroundColor: "#ffca28"}} fluid>
             <Container style={{textAlign: "center"}}>
@@ -92,8 +94,7 @@ class SignInScreen extends React.Component {
                 Let's create the life you love.
               </p>
             </Container>
-          </Jumbotron>;
-          {/* <Navbar isSignedIn={this.state.isSignedIn}></Navbar> */}
+          </Jumbotron>
           <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()}/>
           </body>
         </div>

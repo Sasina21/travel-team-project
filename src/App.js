@@ -10,6 +10,7 @@ import SpecificTrip from './components/SpecificTrip'
 import Profile from './components/Profile'
 import ImitateTrip from './components/ImitateTrip'
 import Login from './components/SignIn'
+import NotGuide from './components/NotGuide'
 
 class App extends Component {
   render() {
@@ -25,6 +26,7 @@ class App extends Component {
           <Route exact path="/EditLocation" component={EditLocation} />
           <Route exact path="/Profile" component={Profile} />
           <Route exact path="/ImitateTrip" component={ImitateTrip} />
+          <Route exact path="/NotGuide" component={NotGuide} />
         </Switch>
       </BrowserRouter>
     );

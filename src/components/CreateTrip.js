@@ -15,6 +15,7 @@ class CreateTrip extends Component {
       myid: '',
       idCompany: '',
       duration: '',
+      nameTrip:'',
       country: '',
       checkinsertDataTrip: false,
       showForm: false,
@@ -86,7 +87,12 @@ class CreateTrip extends Component {
       duration: duration,
       checkinsertDataTrip: true,
       idTrip: idTrip,
+      nameTrip: nameTrip,
+      country: country,
    })
+    dbCon.child(idTrip).update({
+      idTrip: idTrip
+    })
     }else{
       console.log("null")
       this.setState({
@@ -230,8 +236,8 @@ class CreateTrip extends Component {
                     <option value="Kazakhstan">Kazakhstan</option>
                     <option value="Kenya">Kenya</option>
                     <option value="Kiribati">Kiribati</option>
-                    <option value="Democratic People's Republic of Korea">Korea, Democratic People's Republic of</option>
-                    <option value="Korea">Korea, Republic of</option>
+                    <option value="Korea,DPR">Korea, DPR</option>
+                    <option value="Korea">Korea, South</option>
                     <option value="Kuwait">Kuwait</option>
                     <option value="Kyrgyzstan">Kyrgyzstan</option>
                     <option value="Lao">Lao People's Democratic Republic</option>
@@ -385,6 +391,8 @@ class CreateTrip extends Component {
               state:{
                 idTrip: this.state.idTrip ,
                 duration: this.state.duration,
+                nameTrip: this.state.nameTrip,
+                country: this.state.country,
               }
             }}/>
             }
@@ -402,15 +410,23 @@ class CreateTrip extends Component {
             </Modal>
           </div>
         )
-    }else{
-        return(
-            <div style={{textAlign: "center", marginTop: "50px"}}>
-             <Link to ="/"><Button variant="warning">Sign In</Button></Link>
-            </div>
-        )
+    }else if(!this.state.isSignedIn){
+      return(
+          <div style={{textAlign: "center", marginTop: "50px"}}>
+           <Link to ="/"><Button variant="warning">Sign In</Button></Link>
+          </div>
+      )
+  }else {
+      return(
+        <div>
+          <Form.Group style={{textAlign: 'center', marginTop: '10%'}}>
+              <Form.Text style={{fontSize: '20px'}}> You are not Guide </Form.Text>
+              <Link to="/"><Button style={{marginTop: '20px'}} variant="dark" onClick={() => firebase.auth().signOut()}>Sign Out</Button></Link>
+          </Form.Group>
+        </div>
+      )
     }
-        
-    }
+  }
 
 }
 export default CreateTrip

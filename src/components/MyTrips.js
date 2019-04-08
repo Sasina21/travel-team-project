@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import firebase from '../firebase'
 import Navbar from './Navbar'
 import { Button, Card, Form, Row, Col, Badge} from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 // import { SyncWaterfallHook } from 'tapable';
 
 class MyTrips extends Component {
@@ -33,7 +33,7 @@ class MyTrips extends Component {
     }
 
     async readData(){
-        console.log('read data')
+        // console.log('read data')
         if(this.state.idCompany !== ''){
             var rootRef = await firebase.database().ref("Companies/" + this.state.idCompany + '/Trips');
         rootRef.once("value")
@@ -41,11 +41,12 @@ class MyTrips extends Component {
                 // var key = snapshot.key; // null
                 // var childKey = snapshot.child("users/ada").key; // "ada"
                 // console.log(Object.values(snapshot.val()))
-                this.setState({
-                    dataTrip: Object.values(snapshot.val()),
-                    alreadyReaddata: true,
-                })
-                
+                if(snapshot.val() != null){
+                    this.setState({
+                        dataTrip: Object.values(snapshot.val()),
+                        alreadyReaddata: true,
+                    })   
+                }
             });
         }
         
@@ -66,9 +67,11 @@ class MyTrips extends Component {
         var id_company= await firebase.database().ref("Guides/" + user.uid );
         id_company.once("value")
               .then(snapshot => {
-                this.setState({
-                  idCompany: snapshot.val().Id_company
-                })
+                  if(snapshot.val() != null){
+                    this.setState({
+                        idCompany: snapshot.val().Id_company
+                      })
+                  }
               });
         // console.log(this.state.displayName)
       }
@@ -77,7 +80,7 @@ class MyTrips extends Component {
         if( !this.state.alreadyReaddata){
             this.readData()
         }
-        if (this.state.isSignedIn){
+        if (this.state.isSignedIn && this.state.idCompany){
             return(
                 <div>
                 <Navbar displayName = {this.state.displayName} />
@@ -113,7 +116,16 @@ class MyTrips extends Component {
                                     <Card.Text style={{fontSize: "14px"}} >{item.country}</Card.Text>
                                     <Card.Text style={{fontSize: "14px"}} >Duration: {item.duration}</Card.Text>
                                     <Form.Group style={{textAlign: "end"}}>
-                                    <Link to="/SpecificTrip"><Button variant="warning">Detail</Button></Link>
+                                    <Link to={{
+                                        pathname: "/SpecificTrip",
+                                        state: {
+                                            idTrip: item.idTrip,
+                                            duration: item.duration,
+                                            nameTrip: item.nameTrip,
+                                            country: item.country
+                                        }
+                                        }}>
+                                        <Button variant="warning">Detail</Button></Link>
                                     </Form.Group>
                                     </Card.Body>
                                 </Card>
@@ -126,11 +138,20 @@ class MyTrips extends Component {
                 
             </div>
             )
-        }else{
+        }else if(!this.state.isSignedIn){
             return(
                 <div style={{textAlign: "center", marginTop: "50px"}}>
                  <Link to ="/"><Button variant="warning">Sign In</Button></Link>
                 </div>
+            )
+        }else {
+            return(
+            <div>
+                <Form.Group style={{textAlign: 'center', marginTop: '10%'}}>
+                    <Form.Text style={{fontSize: '20px'}}> You are not Guide </Form.Text>
+                    <Link to="/"><Button style={{marginTop: '20px'}} variant="dark" onClick={() => firebase.auth().signOut()}>Sign Out</Button></Link>
+                </Form.Group>
+            </div>
             )
         }
     }

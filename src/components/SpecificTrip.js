@@ -69,10 +69,13 @@ componentWillUpdate(nextProps, nextState){
     removeTrip(){
       let dbCon = firebase.database().ref('/Companies/' + this.state.idCompany + '/Trips/' + this.props.location.state.idTrip)
       dbCon.remove()
+      let dbTrips = firebase.database().ref('Trips/' + this.props.location.state.idTrip)
+      dbTrips.remove()
       this.setState({
         showForm: false,
         alreadyDelete: true,
       })
+
     }
 
     render(){
@@ -101,6 +104,7 @@ componentWillUpdate(nextProps, nextState){
                     pathname:"/ImitateTrip",
                     state:{
                       duration: this.props.location.state.duration,
+                      idTrip: this.props.location.state.idTrip ,
                     }
                     }}>
                       <Button variant="dark">Start Trip</Button>

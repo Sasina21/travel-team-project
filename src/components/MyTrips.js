@@ -15,8 +15,14 @@ class MyTrips extends Component {
             idCompany:'',
             displayName:'',
             alreadyReaddata: false,
+            detailActiveTrip: '',
+            alreadyReadActive: false,
+            startDate: '',
+            idActiveTrip: '',
+            picActiveTrip: '',
         }
         this.readData = this.readData.bind(this)
+        this.readActiveTrip = this.readActiveTrip.bind(this)
         this.componentDidMount = this.componentDidMount.bind(this)
         this.getInfo = this.getInfo.bind(this)
         
@@ -52,6 +58,50 @@ class MyTrips extends Component {
         
     }
 
+    async readActiveTrip(){
+        // console.log('read data')
+        if(this.state.idCompany !== ''){
+            var rootRef = await firebase.database().ref("Guides/" + this.state.myid + '/activeTrip/idGroup');
+        rootRef.once("value")
+            .then(snapshot => {
+                // var key = snapshot.key; // null
+                // var childKey = snapshot.child("users/ada").key; // "ada"
+                // console.log(Object.values(snapshot.val()))
+                if(snapshot.val() != null){
+                    console.log('idGroup '+ snapshot.val())
+                    var myActive = firebase.database().ref("Groups/" + snapshot.val());
+                    myActive.once("value")
+                        .then(snapshot => {
+                            console.log('idTrip ' + snapshot.val().startDate)
+                            this.setState({
+                                startDate: snapshot.val().startDate,
+                                idActiveTrip: snapshot.val().idTrip
+                            })
+                            var dbCompany = firebase.database().ref("/Companies/" + this.state.idCompany + '/Trips/' + snapshot.val().idTrip + '/picfirst')
+                            dbCompany.once("value")
+                                .then(snapshot => {
+                                    this.setState({
+                                        picActiveTrip: snapshot.val()
+                                    })
+                                    console.log('pic' + this.state.picActiveTrip)
+                                })
+                        
+                            var detailTrip = firebase.database().ref("Trips/" + snapshot.val().idTrip);
+                            detailTrip.once("value")
+                                .then(snapshot => {
+                                    console.log(Object.values(snapshot.val()))
+                                    this.setState({
+                                        detailActiveTrip: snapshot.val(),
+                                        alreadyReadActive: true,
+                                    })
+                                })
+                        }) 
+                }
+            });
+        }
+        
+    }
+
     componentWillUpdate(nextProps, nextState){
         if (nextState.isSignedIn === true && this.state.isSignedIn === false) {
           this.getInfo()
@@ -77,8 +127,9 @@ class MyTrips extends Component {
       }
     
     render(){
-        if( !this.state.alreadyReaddata){
+        if( !this.state.alreadyReaddata && !this.state.alreadyReadActive){
             this.readData()
+            this.readActiveTrip()
         }
         if (this.state.isSignedIn && this.state.idCompany){
             return(
@@ -86,19 +137,28 @@ class MyTrips extends Component {
                 <Navbar displayName = {this.state.displayName} />
                 <Row style={{marginTop: "30px",marginLeft: "70px", marginRight: "50px"}}>   
                     <Col sm={3}>
-                    <Card style={{ width: '18rem' , marginBottom: "25px"}}>
-                        <Card.Img style={{maxWidth:"18rem"}} variant="top" src="https://cdn.cnn.com/cnnnext/dam/assets/170606121226-japan---travel-destination---shutterstock-230107657.jpg" />
-                        <Card.Body>
-                            <Card.Title >Japan Fun</Card.Title>
-                            <Card.Text style={{fontSize: "14px"}} >Japan</Card.Text>
-                            <Card.Text style={{fontSize: "14px"}} >duration 2</Card.Text>
-                            <Card.Text><Badge variant="secondary">12 March-17 March</Badge></Card.Text>
-                            <Form.Group style={{textAlign: "end"}}>
-                            <Link to="/SpecificTrip"><Button variant="warning">Detail</Button></Link>
-                            </Form.Group>
+                        <Card style={{ width: '18rem' , marginBottom: "25px"}}>
+                            <Card.Img style={{maxWidth:"18rem"}} variant="top" src={this.state.picActiveTrip} />
+                            <Card.Body>
+                                <Card.Title >{this.state.detailActiveTrip.nameTrip}</Card.Title>
+                                <Card.Text style={{fontSize: "14px"}} >{this.state.detailActiveTrip.country}</Card.Text>
+                                <Card.Text style={{fontSize: "14px"}} >duration {this.state.detailActiveTrip.duration}</Card.Text>
+                                <Card.Text><Badge variant="secondary">start date{this.state.startDate}</Badge></Card.Text>
+                                <Form.Group style={{textAlign: "end"}}>
+                                <Link to={{
+                                        pathname: "/SpecificTrip",
+                                        state: {
+                                            idTrip: this.state.idActiveTrip,
+                                            duration: this.state.detailActiveTrip.duration,
+                                            nameTrip: this.state.detailActiveTrip.nameTrip,
+                                            country: this.state.detailActiveTrip.country
+                                        }
+                                        }}><Button variant="warning">Detail</Button></Link>
+                                </Form.Group>
                             </Card.Body>
                         </Card>
                     </Col>
+                    
                 </Row>
                 <hr/>
 

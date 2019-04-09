@@ -11,6 +11,7 @@ import Profile from './components/Profile'
 import ImitateTrip from './components/ImitateTrip'
 import Login from './components/SignIn'
 import NotGuide from './components/NotGuide'
+import AddMember from './components/AddMember'
 
 class App extends Component {
   render() {
@@ -27,6 +28,7 @@ class App extends Component {
           <Route exact path="/Profile" component={Profile} />
           <Route exact path="/ImitateTrip" component={ImitateTrip} />
           <Route exact path="/NotGuide" component={NotGuide} />
+          <Route exact path="/AddMember" component={AddMember} />
         </Switch>
       </BrowserRouter>
     );

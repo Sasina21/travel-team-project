@@ -42,7 +42,9 @@ class CreateTrip extends Component {
 
   notNullCheck(){
     if(document.getElementById('nameTrip').value === ''){
-      // console.log("null")
+      this.setState({
+        showForm: true,
+      })
       return false
     }else{
       // console.log("complete")
@@ -93,11 +95,6 @@ class CreateTrip extends Component {
     dbCon.child(idTrip).update({
       idTrip: idTrip
     })
-    }else{
-      console.log("null")
-      this.setState({
-        showForm: true,
-      })
     }
   }
 

@@ -45,7 +45,13 @@ class Profile extends Component {
               .then(snapshot => {
                 this.setState({
                   idCompany: snapshot.val().Id_company,
-                  nameCompany: snapshot.val().nameCompany
+                })
+                var namecompany= firebase.database().ref("Companies/" + this.state.idCompany +'/name' );
+                namecompany.once("value")
+                .then(snapshot => {
+                    this.setState({
+                        nameCompany: snapshot.val()
+                    })
                 })
               });
         // console.log(this.state.displayName)
@@ -79,11 +85,6 @@ class Profile extends Component {
                                 <Form.Control id="location" type="location" placeholder="Where do you want to go ?" />
                             </Form.Group> */}
                             
-                            
-                    
-                            <Form.Group style={{textAlign: "end"}}>
-                                <Button href="/SpecificTrip" variant="dark">Done</Button>
-                            </Form.Group>
                             </Col>
                         </Row>
                         

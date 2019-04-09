@@ -7,6 +7,7 @@ import EditLocation from './components/EditLocation'
 import DetailCreateTrip from './components/DetailCreateTrip'
 import MyTrips from './components/MyTrips'
 import SpecificTrip from './components/SpecificTrip'
+import ActiveSpecificTrip from './components/ActiveSpecificTrip'
 import Profile from './components/Profile'
 import ImitateTrip from './components/ImitateTrip'
 import Login from './components/SignIn'
@@ -24,6 +25,7 @@ class App extends Component {
           <Route exact path="/Table" component={Table} />
           <Route exact path="/DetailCreateTrip" component={DetailCreateTrip} />
           <Route exact path="/SpecificTrip" component={SpecificTrip} />
+          <Route exact path="/ActiveSpecificTrip" component={ActiveSpecificTrip} />
           <Route exact path="/EditLocation" component={EditLocation} />
           <Route exact path="/Profile" component={Profile} />
           <Route exact path="/ImitateTrip" component={ImitateTrip} />

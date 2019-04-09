@@ -19,6 +19,7 @@ class MyTrips extends Component {
             alreadyReadActive: false,
             startDate: '',
             idActiveTrip: '',
+            idActiveGroup: '',
             picActiveTrip: '',
         }
         this.readData = this.readData.bind(this)
@@ -68,6 +69,9 @@ class MyTrips extends Component {
                 // var childKey = snapshot.child("users/ada").key; // "ada"
                 // console.log(Object.values(snapshot.val()))
                 if(snapshot.val() != null){
+                    this.setState({
+                        idActiveGroup: snapshot.val()
+                    })
                     console.log('idGroup '+ snapshot.val())
                     var myActive = firebase.database().ref("Groups/" + snapshot.val());
                     myActive.once("value")
@@ -75,7 +79,7 @@ class MyTrips extends Component {
                             console.log('idTrip ' + snapshot.val().startDate)
                             this.setState({
                                 startDate: snapshot.val().startDate,
-                                idActiveTrip: snapshot.val().idTrip
+                                idActiveTrip: snapshot.val().idTrip,
                             })
                             var dbCompany = firebase.database().ref("/Companies/" + this.state.idCompany + '/Trips/' + snapshot.val().idTrip + '/picfirst')
                             dbCompany.once("value")
@@ -135,23 +139,26 @@ class MyTrips extends Component {
             return(
                 <div>
                 <Navbar displayName = {this.state.displayName} />
-                <Row style={{marginTop: "30px",marginLeft: "70px", marginRight: "50px"}}>   
-                    <Col sm={3}>
+                {
+                        this.state.detailActiveTrip.nameTrip && (
+                        <Row style={{marginTop: "30px",marginLeft: "70px", marginRight: "50px"}}>   
+                        <Col sm={3}>
                         <Card style={{ width: '18rem' , marginBottom: "25px"}}>
                             <Card.Img style={{maxWidth:"18rem"}} variant="top" src={this.state.picActiveTrip} />
                             <Card.Body>
                                 <Card.Title >{this.state.detailActiveTrip.nameTrip}</Card.Title>
                                 <Card.Text style={{fontSize: "14px"}} >{this.state.detailActiveTrip.country}</Card.Text>
                                 <Card.Text style={{fontSize: "14px"}} >duration {this.state.detailActiveTrip.duration}</Card.Text>
-                                <Card.Text><Badge variant="secondary">start date{this.state.startDate}</Badge></Card.Text>
+                                <Card.Text><Badge variant="secondary">start date {this.state.startDate}</Badge></Card.Text>
                                 <Form.Group style={{textAlign: "end"}}>
                                 <Link to={{
-                                        pathname: "/SpecificTrip",
+                                        pathname: "/ActiveSpecificTrip",
                                         state: {
                                             idTrip: this.state.idActiveTrip,
                                             duration: this.state.detailActiveTrip.duration,
                                             nameTrip: this.state.detailActiveTrip.nameTrip,
-                                            country: this.state.detailActiveTrip.country
+                                            country: this.state.detailActiveTrip.country,
+                                            idGroup: this.state.idActiveGroup,
                                         }
                                         }}><Button variant="warning">Detail</Button></Link>
                                 </Form.Group>
@@ -159,7 +166,10 @@ class MyTrips extends Component {
                         </Card>
                     </Col>
                     
-                </Row>
+                    </Row>
+                    )
+                    }
+                
                 <hr/>
 
 

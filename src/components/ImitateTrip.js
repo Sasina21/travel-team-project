@@ -75,6 +75,7 @@ class ImitateTrip extends Component {
             });
       // console.log(this.state.displayName)
     }
+    
       
     async insertDataTrip(){
       var startDate =  await document.getElementById('startDate').value

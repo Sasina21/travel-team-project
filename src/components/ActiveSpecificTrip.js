@@ -16,22 +16,17 @@ class SpecificTrip extends Component {
         displayName:'',
         showForm: false,
         alreadyDelete: false,
-        canNotImitateShow: false,
-        canImitate: false,
+        idGroup: ''
     }
     this.componentDidMount = this.componentDidMount.bind(this)
     this.getInfo = this.getInfo.bind(this)
     this.removeTrip = this.removeTrip.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleChange = this.handleChange.bind(this)
-    this.activeTripCheck = this.activeTripCheck.bind(this)
     
 };
 handleClose() {
-  this.setState({ 
-    showForm: false ,
-    canNotImitateShow: false
-  });
+  this.setState({ showForm: false });
 }
 
 handleChange(){
@@ -73,10 +68,14 @@ componentWillUpdate(nextProps, nextState){
   }
 
     removeTrip(){
-      let dbCon = firebase.database().ref('/Companies/' + this.state.idCompany + '/Trips/' + this.props.location.state.idTrip)
-      dbCon.remove()
-      let dbTrips = firebase.database().ref('Trips/' + this.props.location.state.idTrip)
+      let dbGroups = firebase.database().ref('Groups/' + this.props.location.state.idGroup)
+      dbGroups.remove()
+      let dbTrips = firebase.database().ref('Trips/' + this.props.location.state.idTrip + '/Groups/' + this.props.location.state.idGroup)
       dbTrips.remove()
+      let dbGuide = firebase.database().ref('Guides/' + this.state.myid + '/activeTrip')
+      dbGuide.remove()
+      let dbUser = firebase.database().ref('Users/' + this.props.location.state.idGroup)
+      dbUser.remove()
       this.setState({
         showForm: false,
         alreadyDelete: true,
@@ -84,26 +83,9 @@ componentWillUpdate(nextProps, nextState){
 
     }
 
-    activeTripCheck(){
-      var checkActive= firebase.database().ref("Guides/" + this.state.myid + '/activeTrip' );
-      checkActive.once("value")
-            .then(snapshot => {
-              console.log('can active ' +snapshot.val())
-              if(snapshot.val() !== null){
-                this.setState({
-                  canNotImitateShow: true
-                })
-              }else{
-                this.setState({
-                  canImitate: true
-                })
-              }
-            });
-    }
-
     render(){
-      // console.log(this.state.idCompany)
-      // console.log(this.props.location.state.idTrip)
+      console.log(this.state.idCompany)
+      console.log('idTrip ' +this.props.location.state.idTrip)
         return(
           <div>
             <Navbar displayName={this.state.displayName}></Navbar>
@@ -112,7 +94,7 @@ componentWillUpdate(nextProps, nextState){
               <TableScheDule duration={this.props.location.state.duration} idTrip={this.props.location.state.idTrip}></TableScheDule>
 
               <Form.Group style={{textAlign: "end"}}>
-                  <Link to={{
+                <Link to={{
                     pathname:"/DetailCreateTrip",
                     state:{
                       idTrip: this.props.location.state.idTrip ,
@@ -123,18 +105,15 @@ componentWillUpdate(nextProps, nextState){
                     }}>
                     <Button variant="warning" style={{marginRight: "10px"}}>Edit</Button>
                   </Link>
-                  
-                      <Button onClick={this.activeTripCheck} variant="dark">Start Trip</Button>
-                    {
-                      this.state.canImitate && 
-                      <Redirect push to={{
-                        pathname: '/ImitateTrip',
-                        state:{
-                          duration: this.props.location.state.duration,
-                          idTrip: this.props.location.state.idTrip ,
-                        }
-                      }}/>
+
+                  <Link to={{
+                    pathname:"/AddMember",
+                    state:{
+                      idGroup: this.props.location.state.idGroup ,
                     }
+                    }}>
+                    <Button variant="dark" style={{marginRight: "10px"}}>Add Member</Button>
+                  </Link>
               </Form.Group>
 
             </div>
@@ -145,23 +124,10 @@ componentWillUpdate(nextProps, nextState){
               <Modal.Header style={{backgroundColor: '#C21807', color: "white"}} closeButton>
                 <Modal.Title>Are you sure ?</Modal.Title>
               </Modal.Header>
-              <Modal.Body>You would like to delete this trip.</Modal.Body>
+              <Modal.Body> Would You like to delete this trip.</Modal.Body>
               <Modal.Footer>
                 <Button variant="danger" onClick={this.removeTrip}>
                   Yes
-                </Button>
-                
-              </Modal.Footer>
-            </Modal>
-
-            <Modal show={this.state.canNotImitateShow} onHide={this.handleClose}>
-              <Modal.Header style={{backgroundColor: '#C21807', color: "white"}} closeButton>
-                <Modal.Title>Can not Imitate</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>You have an active trip now.</Modal.Body>
-              <Modal.Footer>
-                <Button onClick={this.handleClose} variant="danger">
-                  OK
                 </Button>
                 
               </Modal.Footer>

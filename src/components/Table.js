@@ -34,22 +34,41 @@ class TableSchedul extends Component {
         return arr;
     }
 
+    
     createTable(day){
         var arr = []
-        console.log('createTable '+day)
-        for(let i = 0 ; i < this.state.dataTrip.length ; i++ ){
-            console.log('bookDay '+this.state.dataTrip[i].bookDay)
-            if(parseInt(this.state.dataTrip[i].bookDay) === parseInt(day)){
-                this.buildOptionsTime().map((time) => {
-                    if(this.state.dataTrip[i].startTime === time){
-                        arr.push(<td style={{tableLayout: "fixed", backgroundColor: 'salmon' }} key={time}></td>)
-                    }else{
-                        arr.push(<td style={{tableLayout: "fixed" }} key={time}></td>)
+        var check =[]
+        console.log(this.state.dataTrip)
+        this.state.dataTrip.map(item => {
+            if (item.bookDay == day) {
+                const start = item.startTime.split(':')
+                const end = item.endTime.split(':')
+                const durationTime = ((parseInt(end[0])*60+parseInt(end[1])) - (parseInt(start[0])*60+parseInt(start[1])))/30
+                this.buildOptionsTime().map((time, index) => {
+                    if (time == item.startTime) {
+                        console.log(index)
+                        arr[index] = <td colSpan={durationTime} style={{tableLayout: "fixed", backgroundColor: 'salmon' ,textAlign:'center'}} key={index}>
+                            <Link style={{color:'black', fontSize:'12px'}} to="/EditLocation"><Image style={{height:'auto'}} src={item.picture} fluid />{item.location}</Link>
+                        </td>
+                        check[index] = 'fill'
+                        for (let i = index ; i < durationTime+index ; i ++){
+                            check[index] = 'fill'
+                        }
+                        // for (let i = index ; i < durationTime+index ; i ++){
+                        //     console.log('push', durationTime)
+                        //     arr[i] = <td style={{tableLayout: "fixed", backgroundColor: 'salmon' }} key={index}></td>
+                        //     check[i] = 'fill'
+                        // }
+                    } else {
+                        if (check[index] == 'fill') {
+
+                        } else {
+                            arr[index] = <td style={{tableLayout: "fixed" }} key={index}></td>
+                        }
                     }
                 })
             }
-        }
-        
+        })
         return arr
     }
 

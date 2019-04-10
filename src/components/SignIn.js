@@ -85,7 +85,7 @@ class SignInScreen extends React.Component {
     if (!this.state.isSignedIn ) {
       return (
         <div >
-          <body style={{backgroundColor: "#ffca28" }} >
+          <body style={{backgroundColor: "#ffca28",  height: '100vh'}} >
           <Jumbotron style={{backgroundColor: "#ffca28"}} fluid>
             <Container style={{textAlign: "center"}}>
             <FaSignature size="100px" ></FaSignature>

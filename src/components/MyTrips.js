@@ -90,7 +90,7 @@ class MyTrips extends Component {
                                     console.log('pic' + this.state.picActiveTrip)
                                 })
                         
-                            var detailTrip = firebase.database().ref("Trips/" + snapshot.val().idTrip);
+                            var detailTrip = firebase.database().ref("Groups/" + snapshot.val().idGroup);
                             detailTrip.once("value")
                                 .then(snapshot => {
                                     console.log(Object.values(snapshot.val()))

@@ -6,6 +6,8 @@ import DatePicker from "react-datepicker";
 import { Redirect } from 'react-router-dom'
 import { addDays } from "date-fns";
 
+import "react-datepicker/dist/react-datepicker.css";
+
 class ImitateTrip extends Component {
     constructor(props) {
         super(props);
@@ -18,6 +20,7 @@ class ImitateTrip extends Component {
           nameCompany:'',
           displayName:'',
           idGroup:'',
+          dataTrip: null,
         };
         this.handleChangeStart = this.handleChangeStart.bind(this);
         this.handleChangeEnd = this.handleChangeEnd.bind(this);
@@ -87,18 +90,27 @@ class ImitateTrip extends Component {
         duration: this.props.location.state.duration,
         idTrip: this.props.location.state.idTrip,
         idGuide: this.state.myid,
+        // nameTrip: this.state.dataTrip.nameTrip,
       }).key
       this.setState({
         idGroup: idGroup,
       })
+      var dbTrip = firebase.database().ref('Trips/' + this.props.location.state.idTrip)
+      dbTrip.once("value")
+        .then(snapshot => {
+          dbCon.child(idGroup).update({
+            nameTrip: snapshot.val().nameTrip,
+            Detail: snapshot.val().Detail
+          })
+        })
       dbCon.child(idGroup).update({
         idGroup: idGroup
       })
 
-      let dbCompany = firebase.database().ref('/Trips/' + this.props.location.state.idTrip + '/Groups')
-      dbCompany.push({
-        idGroup: idGroup
-      })
+      // let dbCompany = firebase.database().ref('/Trips/' + this.props.location.state.idTrip + '/Groups')
+      // dbCompany.push({
+      //   idGroup: idGroup
+      // })
       let dbGuide = firebase.database().ref('/Guides/' + this.state.myid + '/activeTrip/')
       dbGuide.update({
         idGroup: idGroup

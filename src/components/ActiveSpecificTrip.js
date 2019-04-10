@@ -97,7 +97,7 @@ componentWillUpdate(nextProps, nextState){
                 <Link to={{
                     pathname:"/DetailCreateTrip",
                     state:{
-                      idTrip: this.props.location.state.idTrip ,
+                      idGroup: this.props.location.state.idGroup ,
                       duration: this.props.location.state.duration,
                       nameTrip: this.props.location.state.nameTrip,
                       country: this.props.location.state.country,

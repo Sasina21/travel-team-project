@@ -2,11 +2,8 @@ import React, { Component } from 'react'
 import firebase from '../firebase'
 import Navbar from './Navbar'
 import { Button, Form, Col, Modal, ProgressBar, Image, Row} from 'react-bootstrap'
-import DatePicker from "react-datepicker";
 import TableSchedule from './Table'
 import { Redirect ,Link } from 'react-router-dom';
-
-import "react-datepicker/dist/react-datepicker.css";
 
 class DetailCreateTrip extends Component {
 
@@ -26,8 +23,7 @@ class DetailCreateTrip extends Component {
       idCompany:'',
       displayName:'',
       picfirst: false,
-      dataDetailTrip: ''
-      
+      dataDetailTrip: '',  
     };
     this.handleChangePic = this.handleChangePic.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
@@ -104,8 +100,8 @@ class DetailCreateTrip extends Component {
   notNullCheck(){
     if(document.getElementById('location').value === '' ||
       document.getElementById('startTime').value ==='' ||
-      document.getElementById('endTime').value ===''||
-      document.querySelector('input[name="radio1"]:checked').value ==='')
+      document.getElementById('endTime').value ==='')
+      // document.querySelector('input[name="radio1"]:checked').value ==='')
       {
         this.setState({
           showForm: true,
@@ -119,29 +115,49 @@ class DetailCreateTrip extends Component {
   
   insertDetailData(){
     if(this.notNullCheck()){
+      var idTripDetail = null
       var location =  document.getElementById('location').value;
       var bookDay =  document.getElementById('bookDay').value;
       var description =  document.getElementById('description').value;
       var startTime =  document.getElementById('startTime').value;
       var endTime =  document.getElementById('endTime').value;
-      var alertTime = document.querySelector('input[name="radio1"]:checked').value;
+      // var alertTime = document.querySelector('input[name="radio1"]:checked').value;
 
-      let dbCon = firebase.database().ref('Trips/' + this.props.location.state.idTrip);
-        dbCon.update({
-          duration: this.props.location.state.duration,
-          nameTrip: this.props.location.state.nameTrip,
-          country: this.props.location.state.country,
-        })
-      let detail = firebase.database().ref('Trips/' + this.props.location.state.idTrip + '/Detail');
-        var idTripDetail = detail.push({
-          bookDay: bookDay,
-          location: location,
-          startTime: startTime,
-          endTime: endTime,
-          alertTime: alertTime,
-          description: description,
-          picture: this.state.url,
-        }).key;
+      if( this.props.location.state.idTrip ){
+        // let dbCon = firebase.database().ref('Trips/' + this.props.location.state.idTrip);
+        //   dbCon.update({
+        //     duration: this.props.location.state.duration,
+        //     nameTrip: this.props.location.state.nameTrip,
+        //     country: this.props.location.state.country,
+        //   })
+        let detail = firebase.database().ref('Trips/' + this.props.location.state.idTrip + '/Detail');
+          idTripDetail = detail.push({
+            bookDay: bookDay,
+            location: location,
+            startTime: startTime,
+            endTime: endTime,
+            // alertTime: alertTime,
+            description: description,
+            picture: this.state.url,
+          }).key;
+      }else if(this.props.location.state.idGroup){
+        // let dbCon = firebase.database().ref('Groups/' + this.props.location.state.idGroup);
+        //   dbCon.update({
+        //     duration: this.props.location.state.duration,
+        //     nameTrip: this.props.location.state.nameTrip,
+        //     country: this.props.location.state.country,
+        //   })
+        let detail = firebase.database().ref('Groups/' + this.props.location.state.idGroup + '/Detail');
+          idTripDetail = detail.push({
+            bookDay: bookDay,
+            location: location,
+            startTime: startTime,
+            endTime: endTime,
+            // alertTime: alertTime,
+            description: description,
+            picture: this.state.url,
+          }).key;
+      }
     
       this.setState({
           idTripDetail: idTripDetail,
@@ -309,7 +325,7 @@ class DetailCreateTrip extends Component {
                 
                   </Form.Group>
 
-                  <Form.Group >
+                  {/* <Form.Group >
                   <Form.Label>Alert</Form.Label>
                   <Col >
                     <Form.Check
@@ -333,7 +349,7 @@ class DetailCreateTrip extends Component {
           
                     />
                   </Col>
-                </Form.Group>
+                </Form.Group> */}
                 </Form>
           
                 <Form.Group style={{textAlign: "end"}}>
@@ -375,7 +391,7 @@ class DetailCreateTrip extends Component {
               pathname: "/MyTrips"
             }}></Redirect>}
           </div>
-          <TableSchedule id={this.state.idTripDetail} duration={this.props.location.state.duration} idTrip={this.props.location.state.idTrip}></TableSchedule>
+          <TableSchedule fromgroup={this.props.location.state.idGroup} duration={this.props.location.state.duration} idTrip={this.props.location.state.idTrip || this.props.location.state.idGroup}></TableSchedule>
         </div>
         )
       }else if(!this.state.isSignedIn){

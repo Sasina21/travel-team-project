@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import firebase from '../firebase'
 import { Table , Image, Badge, Button} from 'react-bootstrap'
-import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 class TableSchedul extends Component {
@@ -39,56 +38,67 @@ class TableSchedul extends Component {
         var arr = []
         var check =[]
         console.log(this.state.dataTrip)
-        this.state.dataTrip.map(item => {
-            if (item.bookDay == day) {
-                const start = item.startTime.split(':')
-                const end = item.endTime.split(':')
-                const durationTime = ((parseInt(end[0])*60+parseInt(end[1])) - (parseInt(start[0])*60+parseInt(start[1])))/30
-                this.buildOptionsTime().map((time, index) => {
-                    if (time == item.startTime) {
-                        console.log(index)
-                        arr[index] = <td colSpan={durationTime} style={{tableLayout: "fixed", backgroundColor: 'salmon' ,textAlign:'center'}} key={index}>
-                            <Link style={{color:'black', fontSize:'12px'}} to="/EditLocation"><Image style={{height:'auto'}} src={item.picture} fluid />{item.location}</Link>
+        this.buildOptionsTime().map((time, index) => {
+            for(let i = 0 ; i < this.state.dataTrip.length ; i++){
+                // console.log('index' +index)
+                if( this.state.dataTrip[i].bookDay == day){
+                    const start = this.state.dataTrip[i].startTime.split(':')
+                    const end = this.state.dataTrip[i].endTime.split(':')
+                    const durationTime = ((parseInt(end[0])*60+parseInt(end[1])) - (parseInt(start[0])*60+parseInt(start[1])))/30
+                    if( time == this.state.dataTrip[i].startTime ){
+                        arr[index] = <td colSpan={durationTime} style={{backgroundColor: 'salmon' ,textAlign:'center',height: "120px"}} key={index}>
+                            <Link style={{color:'black', fontSize:'12px'}} to="/EditLocation"><Image style={{height:'auto'}} src={this.state.dataTrip[i].picture} fluid />{this.state.dataTrip[i].location}</Link>
                         </td>
-                        check[index] = 'fill'
-                        for (let i = index ; i < durationTime+index ; i ++){
-                            check[index] = 'fill'
+                        for(let j = 1 ; j < durationTime ; j++){
+                            check[index+j] = 'fill'
                         }
-                        // for (let i = index ; i < durationTime+index ; i ++){
-                        //     console.log('push', durationTime)
-                        //     arr[i] = <td style={{tableLayout: "fixed", backgroundColor: 'salmon' }} key={index}></td>
-                        //     check[i] = 'fill'
-                        // }
-                    } else {
-                        if (check[index] == 'fill') {
+                        break
+                    }else{
+                        if(check[index] == 'fill'){
 
-                        } else {
-                            arr[index] = <td style={{tableLayout: "fixed" }} key={index}></td>
+                        }else{
+                            arr[index] = <td key={index}></td>
                         }
+                        
                     }
-                })
+                }
             }
         })
+
         return arr
     }
 
     
     componentWillMount(){
-        console.log('table ' +this.props.idTrip)
-        var rootRef = firebase.database().ref("Trips/" + this.props.idTrip + '/Detail');
-        rootRef.once("value")
-            .then(snapshot => {
-                if(snapshot.val() != null){
-                    console.log('Object.values(snapshot.val())')
-                    this.setState({
-                        dataTrip: Object.values(snapshot.val()),
-                        dataTripCheck: true
-                    })
-                    console.log(this.state.dataTrip) 
-                }  
-                // console.log('eiei ' + this.state.dataTrip)  
-                // console.log(this.state.dataTrip[1].bookDay)        
-            })
+        // var rootRef = null
+        console.log('table ' +this.props.fromgroup)
+        if(this.props.fromgroup){
+            var rootRef = firebase.database().ref("Groups/" + this.props.idTrip + '/Detail');
+            rootRef.once("value")
+                .then(snapshot => {
+                    if(snapshot.val() != null){
+                        console.log('Object.values(snapshot.val())')
+                        this.setState({
+                            dataTrip: Object.values(snapshot.val()),
+                            dataTripCheck: true
+                        })
+                        console.log(this.state.dataTrip) 
+                    }        
+                })
+        }else{
+            rootRef = firebase.database().ref("Trips/" + this.props.idTrip + '/Detail');
+            rootRef.once("value")
+                .then(snapshot => {
+                    if(snapshot.val() != null){
+                        console.log('Object.values(snapshot.val())')
+                        this.setState({
+                            dataTrip: Object.values(snapshot.val()),
+                            dataTripCheck: true
+                        })
+                        console.log(this.state.dataTrip) 
+                    }  
+                })
+        }
             
     }
 
@@ -101,11 +111,6 @@ class TableSchedul extends Component {
         //     width: 150px;
         //     height: 60px;
         // `
-
-        // <TableFixed style={{backgroundColor: "salmon"}}>
-        //     <h6 style={{textAlign: "end"}}><Badge variant="secondary">Delete</Badge></h6>
-        //     <Link to="/EditLocation"><Image src="https://d1kls9wq53whe1.cloudfront.net/articles/17085/ORG/312e6c80ac3bf30134743c243bd4ad25.jpg" fluid /></Link>
-        // </TableFixed>
         return(
             <div>
                 <Table striped bordered responsive="sm" style={{overflow:'auto', display: 'block', tableLayout: 'auto'}} >
@@ -123,14 +128,10 @@ class TableSchedul extends Component {
                             this.buildOptionsDuration().map((day) => {
                                 return(
                                     <tr key={day}>
-                                        <th >Day {day}</th>
+                                        <th>Day {day}</th>
                                         {
                                             this.state.dataTrip && this.createTable(day)
                                         }
-                                        {/* {
-                                            this.buildOptionsTime().map((time) => <td style={{tableLayout: "fixed", backgroundColor: 'salmon' }} key={time}></td>)
-                                            
-                                        } */}
                                     </tr>
                                 )
                             })

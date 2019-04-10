@@ -124,7 +124,7 @@ componentWillUpdate(nextProps, nextState){
                     <Button variant="warning" style={{marginRight: "10px"}}>Edit</Button>
                   </Link>
                   
-                      <Button onClick={this.activeTripCheck} variant="dark">Start Trip</Button>
+                      <Button onClick={this.activeTripCheck} variant="dark">Decide date for Trip</Button>
                     {
                       this.state.canImitate && 
                       <Redirect push to={{

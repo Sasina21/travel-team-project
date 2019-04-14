@@ -47,7 +47,16 @@ class TableSchedul extends Component {
                     const durationTime = ((parseInt(end[0])*60+parseInt(end[1])) - (parseInt(start[0])*60+parseInt(start[1])))/30
                     if( time == this.state.dataTrip[i].startTime ){
                         arr[index] = <td colSpan={durationTime} style={{backgroundColor: 'salmon' ,textAlign:'center',height: "120px"}} key={index}>
-                            <Link style={{color:'black', fontSize:'12px'}} to="/EditLocation"><Image style={{height:'auto'}} src={this.state.dataTrip[i].picture} fluid />{this.state.dataTrip[i].location}</Link>
+                            <Link style={{color:'black', fontSize:'12px'}} 
+                            to={{
+                                pathname: "/EditLocation",
+                                state:({
+                                    dataTripOnLocation: this.state.dataTrip[i],
+                                    fromgroup: this.props.fromgroup,
+                                    idTrip: this.props.idTrip
+                                    })
+                                }}>
+                                <Image style={{height:'auto'}} src={this.state.dataTrip[i].picture} fluid />{this.state.dataTrip[i].location}</Link>
                         </td>
                         for(let j = 1 ; j < durationTime ; j++){
                             check[index+j] = 'fill'

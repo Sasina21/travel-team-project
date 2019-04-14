@@ -127,7 +127,7 @@ componentWillUpdate(nextProps, nextState){
                 <Button onClick={this.handleChangeDelete} variant="danger" style={{marginRight: "10px"}}>Delete</Button>
                 <Button onClick={this.handleChangeTerminate} variant="dark" style={{marginRight: "10px"}}>Terminate</Button>
               </Form.Group>
-              <TableScheDule duration={this.props.location.state.duration} idTrip={this.props.location.state.idTrip}></TableScheDule>
+              <TableScheDule fromgroup={this.props.location.state.idGroup} duration={this.props.location.state.duration} idTrip={this.props.location.state.idGroup}></TableScheDule>
 
               <Form.Group style={{textAlign: "end"}}>
                 <Link to={{

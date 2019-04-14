@@ -140,6 +140,10 @@ class DetailCreateTrip extends Component {
             description: description,
             picture: this.state.url,
           }).key;
+          detail.child(idTripDetail).update({
+            idTripDetail: idTripDetail
+          })
+
       }else if(this.props.location.state.idGroup){
         let dbCon = firebase.database().ref('Groups/' + this.props.location.state.idGroup);
           dbCon.update({
@@ -157,6 +161,9 @@ class DetailCreateTrip extends Component {
             description: description,
             picture: this.state.url,
           }).key;
+          detail.child(idTripDetail).update({
+            idTripDetail: idTripDetail
+          })
       }
     
       this.setState({

@@ -109,7 +109,7 @@ componentWillUpdate(nextProps, nextState){
             <Navbar displayName={this.state.displayName}></Navbar>
             <div className="container" style={{marginTop: "30px"}}>
               <Form.Group style={{textAlign: "end"}}><Button onClick={this.handleChange} variant="danger" style={{marginRight: "10px"}}>Delete</Button></Form.Group>
-              <TableScheDule duration={this.props.location.state.duration} idTrip={this.props.location.state.idTrip}></TableScheDule>
+              <TableScheDule duration={this.props.location.state.duration} idTrip={this.props.location.state.idTrip} nameTrip={this.props.location.state.nameTrip} country={this.props.location.state.country}></TableScheDule>
 
               <Form.Group style={{textAlign: "end"}}>
                   <Link to={{

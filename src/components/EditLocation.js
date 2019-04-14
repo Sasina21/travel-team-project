@@ -1,23 +1,54 @@
 import React, { Component } from 'react'
 import Navbar from './Navbar'
 import { Button, Card, Image, Row, Col, Form} from 'react-bootstrap'
-import DatePicker from "react-datepicker";
+import { Link } from 'react-router-dom'
+import firebase from '../firebase'
 
 class EditLocation extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-          startDate: new Date()
+          alreadyDelete: false
         };
         this.handleChange = this.handleChange.bind(this);
-        
+        this.goBack = this.goBack.bind(this);
+        this.removeTrip = this.removeTrip.bind(this)
       }
      
       handleChange(date) {
         this.setState({
           startDate: date
         });
+      }
+
+    goBack(){
+        this.props.history.goBack();
+    }
+
+    removeTrip(){
+        if(this.props.location.state.fromgroup){
+            console.log(this.props.location.state.dataTripOnLocation.idTripDetail)
+            let dbGroups = firebase.database().ref('Groups/' + this.props.location.state.idTrip + '/Detail/' + this.props.location.state.dataTripOnLocation.idTripDetail)
+            dbGroups.remove()
+            this.setState({
+                alreadyDelete: true
+            })
+        }else{
+            console.log(this.props.location.state.dataTripOnLocation.idTripDetail)
+            let dbTrips = firebase.database().ref('Trips/' + this.props.location.state.idTrip + '/Detail/' + this.props.location.state.dataTripOnLocation.idTripDetail)
+            dbTrips.remove()
+            this.setState({
+                alreadyDelete: true
+            })
+        }
+        
+        this.goBack()
+        // this.setState({
+        //   showFormDelete: false,
+        //   alreadyDelete: true,
+        // })
+  
       }
 
     render(){
@@ -27,65 +58,37 @@ class EditLocation extends Component {
                 <Navbar></Navbar>
                 <div style={{marginTop: "30px",marginLeft: "70px", marginRight: "50px" }}>
                     <Card>
-                        <Card.Header as="h5">Name Trip</Card.Header>
+                        <Card.Header as="h5">{this.props.location.state.dataTripOnLocation.location}</Card.Header>
                         <Card.Body>
                             <Row>
                                 <Col sm={6}>
                                     <div style={{textAlign: "center"}}>
-                                        <Image style={{maxWidth: "600px", textAlign: "center"}} src="https://d1kls9wq53whe1.cloudfront.net/articles/17085/ORG/312e6c80ac3bf30134743c243bd4ad25.jpg" fluid />
+                                        <Image style={{maxWidth: "600px", textAlign: "center"}} src={this.props.location.state.dataTripOnLocation.picture} fluid />
                                     </div>
                                 </Col>
 
                                 <Col sm={6}>
                                 <Form.Group>
-                                    <Form.Label>Duration</Form.Label>
-                                    <Form.Control id="bookDay" as="select">
-                                        <option >1 Day</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
-                                        <option>6</option>
-                                        <option>7</option>
-                                        <option>8</option>
-                                        <option>9</option>
-                                        <option>10</option>
-                                    </Form.Control>
-                                </Form.Group>
-
-
-                                <Form.Group >
-                                    <Form.Label>Location</Form.Label>
-                                    <Form.Control id="location" type="location" placeholder="Where do you want to go ?" />
+                                    <Form.Label>Day {this.props.location.state.dataTripOnLocation.bookDay}</Form.Label>
                                 </Form.Group>
                                 
                                 <Form.Group>
-                                    <Form.Label>Time</Form.Label><br/>
-                                    <Form inline><DatePicker
-                                    selected={this.state.startDate}
-                                    onChange={this.handleChange}
-                                    showTimeSelect
-                                    showTimeSelectOnly
-                                    timeIntervals={30}
-                                    dateFormat="h:mm aa"
-                                    timeCaption="Time"
-                                    />
-                                    <Form.Text style={{paddingLeft: "10px", paddingRight: "10px"}}>to</Form.Text>
-                                    <DatePicker
-                                    selected={this.state.startDate}
-                                    onChange={this.handleChange}
-                                    showTimeSelect
-                                    showTimeSelectOnly
-                                    timeIntervals={30}
-                                    dateFormat="h:mm aa"
-                                    timeCaption="Time"
-                                    />
-                                    </Form>
+                                    <Form.Label>Start time : {this.props.location.state.dataTripOnLocation.startTime}</Form.Label>
+                                </Form.Group>
+
+                                <Form.Group >
+                                    <Form.Label>End time : {this.props.location.state.dataTripOnLocation.endTime}</Form.Label>
+                                </Form.Group>
+
+                                <Form.Group >
+                                    <Form.Label>Description : {this.props.location.state.dataTripOnLocation.description}</Form.Label>
                                 </Form.Group>
                         
                                 <Form.Group style={{textAlign: "end"}}>
-                                    <Button href="/SpecificTrip" variant="dark">Done</Button>
+                                    <Button onClick={this.removeTrip} variant="danger" style={{marginRight: "10px"}}>Delete</Button>
+                                    <Button onClick={this.goBack} variant="dark" style={{marginRight: "10px"}}>Back</Button>
                                 </Form.Group>
+                                {/* {this.state.alreadyDelete && this.goBack()} */}
                                 </Col>
                             </Row>
                             

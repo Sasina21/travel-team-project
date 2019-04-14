@@ -100,7 +100,8 @@ class ImitateTrip extends Component {
         .then(snapshot => {
           dbCon.child(idGroup).update({
             nameTrip: snapshot.val().nameTrip,
-            Detail: snapshot.val().Detail
+            Detail: snapshot.val().Detail,
+            country: snapshot.val().country
           })
         })
       dbCon.child(idGroup).update({

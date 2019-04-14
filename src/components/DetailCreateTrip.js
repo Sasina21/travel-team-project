@@ -124,12 +124,12 @@ class DetailCreateTrip extends Component {
       // var alertTime = document.querySelector('input[name="radio1"]:checked').value;
 
       if( this.props.location.state.idTrip ){
-        // let dbCon = firebase.database().ref('Trips/' + this.props.location.state.idTrip);
-        //   dbCon.update({
-        //     duration: this.props.location.state.duration,
-        //     nameTrip: this.props.location.state.nameTrip,
-        //     country: this.props.location.state.country,
-        //   })
+        let dbCon = firebase.database().ref('Trips/' + this.props.location.state.idTrip);
+          dbCon.update({
+            duration: this.props.location.state.duration,
+            nameTrip: this.props.location.state.nameTrip,
+            country: this.props.location.state.country,
+          })
         let detail = firebase.database().ref('Trips/' + this.props.location.state.idTrip + '/Detail');
           idTripDetail = detail.push({
             bookDay: bookDay,
@@ -141,12 +141,12 @@ class DetailCreateTrip extends Component {
             picture: this.state.url,
           }).key;
       }else if(this.props.location.state.idGroup){
-        // let dbCon = firebase.database().ref('Groups/' + this.props.location.state.idGroup);
-        //   dbCon.update({
-        //     duration: this.props.location.state.duration,
-        //     nameTrip: this.props.location.state.nameTrip,
-        //     country: this.props.location.state.country,
-        //   })
+        let dbCon = firebase.database().ref('Groups/' + this.props.location.state.idGroup);
+          dbCon.update({
+            duration: this.props.location.state.duration,
+            nameTrip: this.props.location.state.nameTrip,
+            country: this.props.location.state.country,
+          })
         let detail = firebase.database().ref('Groups/' + this.props.location.state.idGroup + '/Detail');
           idTripDetail = detail.push({
             bookDay: bookDay,

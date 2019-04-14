@@ -14,23 +14,33 @@ class SpecificTrip extends Component {
         myid: '',
         idCompany:'',
         displayName:'',
-        showForm: false,
+        showFormDelete: false,
+        showFormTerminate: false,
         alreadyDelete: false,
         idGroup: ''
     }
     this.componentDidMount = this.componentDidMount.bind(this)
     this.getInfo = this.getInfo.bind(this)
     this.removeTrip = this.removeTrip.bind(this)
+    this.terminateTrip = this.terminateTrip.bind(this)
     this.handleClose = this.handleClose.bind(this)
-    this.handleChange = this.handleChange.bind(this)
+    this.handleChangeDelete = this.handleChangeDelete.bind(this)
+    this.handleChangeTerminate = this.handleChangeTerminate.bind(this)
     
 };
 handleClose() {
-  this.setState({ showForm: false });
+  this.setState({ 
+    showFormDelete: false ,
+    showFormTerminate: false
+  });
 }
 
-handleChange(){
-  this.setState({ showForm: true });
+handleChangeDelete(){
+  this.setState({ showFormDelete: true });
+}
+
+handleChangeTerminate(){
+  this.setState({ showFormTerminate: true });
 }
 componentDidMount() {
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
@@ -77,10 +87,33 @@ componentWillUpdate(nextProps, nextState){
       let dbUser = firebase.database().ref('Users/' + this.props.location.state.idGroup)
       dbUser.remove()
       this.setState({
-        showForm: false,
+        showFormDelete: false,
         alreadyDelete: true,
       })
 
+    }
+
+    terminateTrip(){
+      let dbGuide = firebase.database().ref('Guides/' + this.state.myid + '/activeTrip')
+      dbGuide.once("value")
+        .then(snapshot => {
+          // console.log(snapshot.val())
+          let dbGuideInactive = firebase.database().ref('Guides/' + this.state.myid + '/inactiveTrip')
+          dbGuideInactive.push({
+            idTrip: snapshot.val().idGroup
+          })
+          dbGuide.remove()
+        })
+      // let dbUser = firebase.database().ref('Users/' + this.props.location.state.idGroup)
+      // dbUser.remove()
+      // this.setState({
+      //   showForm: false,
+      //   alreadyDelete: true,
+      // })
+      this.setState({
+        showFormTerminate: false,
+        alreadyDelete: true,
+      })
     }
 
     render(){
@@ -90,7 +123,10 @@ componentWillUpdate(nextProps, nextState){
           <div>
             <Navbar displayName={this.state.displayName}></Navbar>
             <div className="container" style={{marginTop: "30px"}}>
-              <Form.Group style={{textAlign: "end"}}><Button onClick={this.handleChange} variant="danger" style={{marginRight: "10px"}}>Delete</Button></Form.Group>
+              <Form.Group style={{textAlign: "end"}}>
+                <Button onClick={this.handleChangeDelete} variant="danger" style={{marginRight: "10px"}}>Delete</Button>
+                <Button onClick={this.handleChangeTerminate} variant="dark" style={{marginRight: "10px"}}>Terminate</Button>
+              </Form.Group>
               <TableScheDule duration={this.props.location.state.duration} idTrip={this.props.location.state.idTrip}></TableScheDule>
 
               <Form.Group style={{textAlign: "end"}}>
@@ -120,13 +156,26 @@ componentWillUpdate(nextProps, nextState){
             {
               this.state.alreadyDelete && <Redirect to={{pathname: '/MyTrips'}}/>
             }
-            <Modal show={this.state.showForm} onHide={this.handleClose}>
+            <Modal show={this.state.showFormDelete} onHide={this.handleClose}>
               <Modal.Header style={{backgroundColor: '#C21807', color: "white"}} closeButton>
-                <Modal.Title>Are you sure ?</Modal.Title>
+                <Modal.Title>Delete this trip ?</Modal.Title>
               </Modal.Header>
               <Modal.Body> Would You like to delete this trip.</Modal.Body>
               <Modal.Footer>
                 <Button variant="danger" onClick={this.removeTrip}>
+                  Yes
+                </Button>
+                
+              </Modal.Footer>
+            </Modal>
+
+            <Modal show={this.state.showFormTerminate} onHide={this.handleClose}>
+              <Modal.Header style={{backgroundColor: '#C21807', color: "white"}} closeButton>
+                <Modal.Title>Terminate this trip ?</Modal.Title>
+              </Modal.Header>
+              <Modal.Body> Would You like to terminate this trip.</Modal.Body>
+              <Modal.Footer>
+                <Button variant="danger" onClick={this.terminateTrip}>
                   Yes
                 </Button>
                 

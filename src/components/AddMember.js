@@ -137,7 +137,7 @@ class ImitateTrip extends Component {
                   {
                     this.state.members && this.state.members.map((item, index) => {
                       return(
-                        <ListGroup.Item><Button variant="danger" >Delete</Button> {item.email}</ListGroup.Item>
+                        <ListGroup.Item><Button  variant="danger" >Delete</Button> {item.email}</ListGroup.Item>
                       )
                     })
                   }

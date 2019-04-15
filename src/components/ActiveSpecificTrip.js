@@ -159,7 +159,7 @@ componentWillUpdate(nextProps, nextState){
                       country: this.props.location.state.country,
                     }
                     }}>
-                    <Button variant="warning" style={{marginRight: "10px"}}>Edit</Button>
+                    <Button variant="warning" style={{marginRight: "10px"}}>Add More+</Button>
                   </Link>
 
                   <Link to={{

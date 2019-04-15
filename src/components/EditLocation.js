@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Navbar from './Navbar'
-import { Button, Card, Image, Row, Col, Form} from 'react-bootstrap'
+import { Button, Card, Image, Row, Col, Form , Modal} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import firebase from '../firebase'
 
@@ -10,16 +10,29 @@ class EditLocation extends Component {
         super(props);
         this.state = {
         //   alreadyDelete: false
+        showFormDelete: false,
+        alreadyDelete: false,
         };
-        this.handleChange = this.handleChange.bind(this);
+        this.handleChangeDelete = this.handleChangeDelete.bind(this);
+        this.handleClose = this.handleClose.bind(this);
         this.goBack = this.goBack.bind(this);
         this.removeTrip = this.removeTrip.bind(this)
       }
      
-      handleChange(date) {
-        this.setState({
-          startDate: date
+    //   handleChange(date) {
+    //     this.setState({
+    //       startDate: date
+    //     });
+    //   }
+
+      handleClose() {
+        this.setState({ 
+          showFormDelete: false ,
         });
+      }
+      
+      handleChangeDelete(){
+        this.setState({ showFormDelete: true });
       }
 
     goBack(){
@@ -44,10 +57,10 @@ class EditLocation extends Component {
         }
         
         this.goBack()
-        // this.setState({
-        //   showFormDelete: false,
-        //   alreadyDelete: true,
-        // })
+        this.setState({
+          showFormDelete: false,
+          alreadyDelete: true,
+        })
   
       }
 
@@ -85,7 +98,7 @@ class EditLocation extends Component {
                                 </Form.Group>
                         
                                 <Form.Group style={{textAlign: "end"}}>
-                                    <Button onClick={this.removeTrip} variant="danger" style={{marginRight: "10px"}}>Delete</Button>
+                                    <Button onClick={this.handleChangeDelete} variant="danger" style={{marginRight: "10px"}}>Delete</Button>
                                     <Button onClick={this.goBack} variant="dark" style={{marginRight: "10px"}}>Back</Button>
                                 </Form.Group>
                                 {/* {this.state.alreadyDelete && this.goBack()} */}
@@ -96,6 +109,18 @@ class EditLocation extends Component {
                     </Card>
 
                 </div>
+                <Modal show={this.state.showFormDelete} onHide={this.handleClose}>
+                    <Modal.Header style={{backgroundColor: '#C21807', color: "white"}} closeButton>
+                        <Modal.Title>Delete this trip ?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body> Would You like to delete this trip.</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.removeTrip}>
+                        Yes
+                        </Button>
+                        
+                    </Modal.Footer>
+                </Modal>
             </div>
         )
     }

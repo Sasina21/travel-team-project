@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import firebase from '../firebase'
 import Navbar from './Navbar'
-import { Button, Form, Image, Row, Col} from 'react-bootstrap'
+import { Button, Form, Card, ListGroup, Col} from 'react-bootstrap'
 
 class ImitateTrip extends Component {
     constructor(props) {
@@ -14,24 +14,17 @@ class ImitateTrip extends Component {
           displayName:'',
           idGroup:'',
           members:null,
-          readyToRead: false
+          readyToRead: false,
         };
         this.componentDidMount = this.componentDidMount.bind(this)
+        this.componentWillMount = this.componentWillMount.bind(this)
         this.getInfo = this.getInfo.bind(this) 
         this.insertDataTrip = this.insertDataTrip.bind(this)
         this.readMember = this.readMember.bind(this)
+        this.deleteMember= this.deleteMember.bind(this)
       }
     componentWillMount(){
-        let dbCon = firebase.database().ref('Users/' + this.props.location.state.idGroup)
-         dbCon.once("value")
-            .then(snapshot => {
-                if(snapshot.val() != null){
-                    this.setState({
-                        members: snapshot.val().member,
-                    })
-                    console.log(this.state.members)
-                }
-            })
+      this.readMember()
     }
 
     componentDidMount() {
@@ -75,34 +68,58 @@ class ImitateTrip extends Component {
       
     async insertDataTrip(){
       var emailMember =  await document.getElementById('emailMember').value
-      let dbCon = firebase.database().ref('Users/' + this.props.location.state.idGroup)
-       dbCon.update({
-        idGroup: this.props.location.state.idGroup
-      })
-      dbCon.child('/member').push({
-        email: emailMember
-      })
-      this.setState({
-          readyToRead: true
-      })
+      let dbUser = firebase.database().ref('Users/')
+      dbUser.once("value")
+        .then(snapshot => {
+          console.log(Object.values(snapshot.val()))
+          Object.values(snapshot.val()).map((item, index) => {
+            if(item.email == emailMember){
+              console.log(item.email)
+              dbUser.child(item.useruid + '/activeTrip').update({
+                idGroup: this.props.location.state.idGroup
+              })
+              let dbGroup = firebase.database().ref('Groups/' + this.props.location.state.idGroup + '/members')
+              var idPushMem = dbGroup.push({
+                useruid: item.useruid,
+                email: emailMember
+              }).key
+              dbGroup.child(idPushMem).update({
+                idPushMem: idPushMem
+              })
+            }
+          })
+        })
+        this.readMember()
       document.getElementById("myForm").reset();
     }
 
+  
     async readMember(){
-        let dbCon = firebase.database().ref('Users/' + this.props.location.state.idGroup)
-         dbCon.once("value")
-            .then(snapshot => {
-                this.setState({
-                    members: snapshot.val().member,
-                })
-                console.log(this.state.members)
+      let dbGroup = firebase.database().ref('Groups/' + this.props.location.state.idGroup + '/members')
+      dbGroup.once("value")
+        .then(snapshot => {
+          if(snapshot.val() != null){
+            this.setState({
+              members: Object.values(snapshot.val())
             })
-        
-      }
+            console.log(this.state.members)
+          }
+        })
+    }
+
+    deleteMember(idPushMem, idUser){
+      let dbGroup = firebase.database().ref('Groups/' + this.props.location.state.idGroup + '/members/' + idPushMem)
+      dbGroup.remove()
+
+      let dbUser = firebase.database().ref('Users/' + idUser +  '/activeTrip')
+      dbUser.remove()
+
+      this.readMember()
+    }
     
     
     render(){
-        // console.log('idGroup' +this.props.location.state.idGroup)
+        // console.log(this.readMember)
         return(
             <div>
                 <Navbar></Navbar>
@@ -114,6 +131,18 @@ class ImitateTrip extends Component {
                     </Form.Group>
                 </Form>
                 <Button onClick={this.insertDataTrip} variant="warning" >Submit</Button>
+
+                <Card style={{ marginTop: '20px' }}>
+                  <ListGroup variant="flush">
+                  {
+                    this.state.members && this.state.members.map((item, index) => {
+                      return(
+                        <ListGroup.Item><Button variant="danger" >Delete</Button> {item.email}</ListGroup.Item>
+                      )
+                    })
+                  }
+                  </ListGroup>
+                </Card>
                 </div>
             </div>
         )

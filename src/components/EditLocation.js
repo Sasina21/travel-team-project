@@ -9,7 +9,7 @@ class EditLocation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          alreadyDelete: false
+        //   alreadyDelete: false
         };
         this.handleChange = this.handleChange.bind(this);
         this.goBack = this.goBack.bind(this);
@@ -31,16 +31,16 @@ class EditLocation extends Component {
             console.log(this.props.location.state.dataTripOnLocation.idTripDetail)
             let dbGroups = firebase.database().ref('Groups/' + this.props.location.state.idTrip + '/Detail/' + this.props.location.state.dataTripOnLocation.idTripDetail)
             dbGroups.remove()
-            this.setState({
-                alreadyDelete: true
-            })
+            // this.setState({
+            //     alreadyDelete: true
+            // })
         }else{
             console.log(this.props.location.state.dataTripOnLocation.idTripDetail)
             let dbTrips = firebase.database().ref('Trips/' + this.props.location.state.idTrip + '/Detail/' + this.props.location.state.dataTripOnLocation.idTripDetail)
             dbTrips.remove()
-            this.setState({
-                alreadyDelete: true
-            })
+            // this.setState({
+            //     alreadyDelete: true
+            // })
         }
         
         this.goBack()

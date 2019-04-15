@@ -84,8 +84,21 @@ componentWillUpdate(nextProps, nextState){
       dbTrips.remove()
       let dbGuide = firebase.database().ref('Guides/' + this.state.myid + '/activeTrip')
       dbGuide.remove()
-      let dbUser = firebase.database().ref('Users/' + this.props.location.state.idGroup)
-      dbUser.remove()
+
+      let dbUser = firebase.database().ref('Users/')
+      dbUser.once("value")
+        .then(snapshot => {
+          // console.log(snapshot.val())
+          Object.values(snapshot.val()).map((item, index) => {
+            console.log(item.activeTrip)
+            if(item.activeTrip != null){
+              console.log(item.activeTrip.idGroup)
+              if(item.activeTrip.idGroup == this.props.location.state.idGroup){
+                dbUser.child(item.useruid + '/activeTrip').remove()
+              }
+            }
+        })
+      })
       this.setState({
         showFormDelete: false,
         alreadyDelete: true,
@@ -94,22 +107,29 @@ componentWillUpdate(nextProps, nextState){
     }
 
     terminateTrip(){
-      let dbGuide = firebase.database().ref('Guides/' + this.state.myid + '/activeTrip')
-      dbGuide.once("value")
+      let dbGuide = firebase.database().ref('Guides/' + this.state.myid)
+      dbGuide.child('oldTrip').push({
+        idTrip: this.props.location.state.idGroup
+      })
+      dbGuide.child('activeTrip').remove()
+    
+      let dbUser = firebase.database().ref('Users/')
+      dbUser.once("value")
         .then(snapshot => {
           // console.log(snapshot.val())
-          let dbGuideInactive = firebase.database().ref('Guides/' + this.state.myid + '/inactiveTrip')
-          dbGuideInactive.push({
-            idTrip: snapshot.val().idGroup
-          })
-          dbGuide.remove()
+          Object.values(snapshot.val()).map((item, index) => {
+            console.log(item.activeTrip)
+            if(item.activeTrip != null){
+              console.log(item.activeTrip.idGroup)
+              if(item.activeTrip.idGroup == this.props.location.state.idGroup){
+                dbUser.child(item.useruid + '/oldTrip').push({
+                  idTrip: this.props.location.state.idGroup
+                })
+                dbUser.child(item.useruid + '/activeTrip').remove()
+              }
+            }
         })
-      // let dbUser = firebase.database().ref('Users/' + this.props.location.state.idGroup)
-      // dbUser.remove()
-      // this.setState({
-      //   showForm: false,
-      //   alreadyDelete: true,
-      // })
+      })
       this.setState({
         showFormTerminate: false,
         alreadyDelete: true,

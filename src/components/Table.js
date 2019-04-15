@@ -126,9 +126,9 @@ class TableSchedul extends Component {
                     <thead>
                         <tr>
                         <th ></th>
-                        {
+                        {/* {
                             this.buildOptionsTime().map((time) => <td style={{fontSize:"50%"}}key={time}>{time}</td>) 
-                        }
+                        } */}
                         </tr>
                     </thead>
                     <tbody>

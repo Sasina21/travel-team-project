@@ -130,6 +130,14 @@ class DetailCreateTrip extends Component {
             nameTrip: this.props.location.state.nameTrip,
             country: this.props.location.state.country,
           })
+          let pathFirstpic = firebase.database().ref('Companies/' + this.state.idCompany +'/Trips/' + this.props.location.state.idTrip + '/picfirst')
+          pathFirstpic.once("value")
+            .then(snapshot => {
+              dbCon.update({
+                picfirst: snapshot.val()
+              })
+            })
+
         let detail = firebase.database().ref('Trips/' + this.props.location.state.idTrip + '/Detail');
           idTripDetail = detail.push({
             bookDay: bookDay,

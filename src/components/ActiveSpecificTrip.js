@@ -109,7 +109,7 @@ componentWillUpdate(nextProps, nextState){
     terminateTrip(){
       let dbGuide = firebase.database().ref('Guides/' + this.state.myid)
       dbGuide.child('oldTrip').push({
-        idTrip: this.props.location.state.idGroup
+        idGroup: this.props.location.state.idGroup
       })
       dbGuide.child('activeTrip').remove()
     

@@ -95,6 +95,14 @@ class ImitateTrip extends Component {
       this.setState({
         idGroup: idGroup,
       })
+      let pathFirstpic = firebase.database().ref('Trips/' + this.props.location.state.idTrip + '/picfirst');
+          pathFirstpic.once("value")
+            .then(snapshot => {
+              dbCon.child(idGroup).update({
+                picfirst: snapshot.val()
+              })
+            })
+
       var dbTrip = firebase.database().ref('Trips/' + this.props.location.state.idTrip)
       dbTrip.once("value")
         .then(snapshot => {

@@ -132,6 +132,8 @@ componentWillUpdate(nextProps, nextState){
                         state:{
                           duration: this.props.location.state.duration,
                           idTrip: this.props.location.state.idTrip ,
+                          nameTrip: this.props.location.state.nameTrip,
+                          country: this.props.location.state.country,
                         }
                       }}/>
                     }

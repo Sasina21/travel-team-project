@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import firebase from '../firebase'
 import Navbar from './Navbar'
-import { Button, Form, Card, ListGroup, Col} from 'react-bootstrap'
+import { Button, Form, Card, ListGroup, Modal} from 'react-bootstrap'
 
 class ImitateTrip extends Component {
     constructor(props) {
@@ -15,6 +15,7 @@ class ImitateTrip extends Component {
           idGroup:'',
           members:null,
           readyToRead: false,
+          noUserShow: false,
         };
         this.componentDidMount = this.componentDidMount.bind(this)
         this.componentWillMount = this.componentWillMount.bind(this)
@@ -22,7 +23,15 @@ class ImitateTrip extends Component {
         this.insertDataTrip = this.insertDataTrip.bind(this)
         this.readMember = this.readMember.bind(this)
         this.deleteMember= this.deleteMember.bind(this)
+        this.handleClose = this.handleClose.bind(this)
       }
+
+      handleClose() {
+        this.setState({ 
+          noUserShow: false
+        });
+      }
+
     componentWillMount(){
       this.readMember()
     }
@@ -87,6 +96,11 @@ class ImitateTrip extends Component {
                 idPushMem: idPushMem
               })
             }
+            // else if(index >= Object.values(snapshot.val()).length-1){
+            //   this.setState({
+            //     noUserShow: true
+            //   })
+            // }
           })
         })
         this.readMember()
@@ -119,7 +133,7 @@ class ImitateTrip extends Component {
     
     
     render(){
-        // console.log(this.readMember)
+        console.log(this.state.idCompany)
         return(
             <div>
                 <Navbar></Navbar>
@@ -136,14 +150,29 @@ class ImitateTrip extends Component {
                   <ListGroup variant="flush">
                   {
                     this.state.members && this.state.members.map((item, index) => {
+                      // this.state.readytoDelete && this.deleteMember(item.idPushMem, item.idUser)
                       return(
                         <ListGroup.Item><Button  variant="danger" >Delete</Button> {item.email}</ListGroup.Item>
                       )
+                      
                     })
+                    
                   }
                   </ListGroup>
                 </Card>
                 </div>
+                <Modal show={this.state.noUserShow} onHide={this.handleClose}>
+                  <Modal.Header style={{backgroundColor: '#C21807', color: "white"}} closeButton>
+                    <Modal.Title>No E-mail</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body> This email address is not registered </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="danger" onClick={this.handleClose}>
+                      OK
+                    </Button>
+                    
+                  </Modal.Footer>
+                </Modal>
             </div>
         )
     }

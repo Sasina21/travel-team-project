@@ -22,7 +22,6 @@ class DetailCreateTrip extends Component {
       myid: '',
       idCompany:'',
       displayName:'',
-      picfirst: false,
       dataDetailTrip: '',  
     };
     this.handleChangePic = this.handleChangePic.bind(this)
@@ -64,12 +63,6 @@ class DetailCreateTrip extends Component {
       this.setState({ showDone: true });
       // this.insertDetailData()
   }
-
-  // handleChangeEnd(date) {
-  //   this.setState({
-  //     endDate: date
-  //   });
-  // }
 
   handleUpload = () => {
     const {image} = this.state;
@@ -130,13 +123,13 @@ class DetailCreateTrip extends Component {
             nameTrip: this.props.location.state.nameTrip,
             country: this.props.location.state.country,
           })
-          let pathFirstpic = firebase.database().ref('Companies/' + this.state.idCompany +'/Trips/' + this.props.location.state.idTrip + '/picfirst')
-          pathFirstpic.once("value")
-            .then(snapshot => {
-              dbCon.update({
-                picfirst: snapshot.val()
-              })
-            })
+          // let pathFirstpic = firebase.database().ref('Companies/' + this.state.idCompany +'/Trips/' + this.props.location.state.idTrip + '/picfirst')
+          // pathFirstpic.once("value")
+          //   .then(snapshot => {
+          //     dbCon.update({
+          //       picfirst: snapshot.val()
+          //     })
+          //   })
 
         let detail = firebase.database().ref('Trips/' + this.props.location.state.idTrip + '/Detail');
           idTripDetail = detail.push({
@@ -256,6 +249,7 @@ class DetailCreateTrip extends Component {
             })
           });
   }
+
 
   buildOptionsTime() {
     var arr = [];

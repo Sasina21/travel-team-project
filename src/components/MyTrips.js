@@ -76,10 +76,12 @@ class MyTrips extends Component {
                     var myActive = firebase.database().ref("Groups/" + snapshot.val());
                     myActive.once("value")
                         .then(snapshot => {
-                            console.log('idTrip ' + snapshot.val().startDate)
+                            console.log( snapshot.val().startDate)
                             this.setState({
-                                startDate: snapshot.val().startDate,
-                                idActiveTrip: snapshot.val().idTrip,
+                                // startDate: snapshot.val().startDate,
+                                // idActiveTrip: snapshot.val().idTrip,
+                                detailActiveTrip: snapshot.val(),
+                                alreadyReadActive: true,
                             })
                             var dbCompany = firebase.database().ref("/Companies/" + this.state.idCompany + '/Trips/' + snapshot.val().idTrip + '/picfirst')
                             dbCompany.once("value")
@@ -90,15 +92,15 @@ class MyTrips extends Component {
                                     console.log('pic' + this.state.picActiveTrip)
                                 })
                         
-                            var detailTrip = firebase.database().ref("Groups/" + snapshot.val().idGroup);
-                            detailTrip.once("value")
-                                .then(snapshot => {
-                                    console.log(Object.values(snapshot.val()))
-                                    this.setState({
-                                        detailActiveTrip: snapshot.val(),
-                                        alreadyReadActive: true,
-                                    })
-                                })
+                            // var detailTrip = firebase.database().ref("Groups/" + snapshot.val().idGroup);
+                            // detailTrip.once("value")
+                            //     .then(snapshot => {
+                            //         console.log(Object.values(snapshot.val()))
+                            //         this.setState({
+                            //             detailActiveTrip: snapshot.val(),
+                            //             alreadyReadActive: true,
+                            //         })
+                            //     })
                         }) 
                 }
             });
@@ -149,7 +151,7 @@ class MyTrips extends Component {
                                 <Card.Title >{this.state.detailActiveTrip.nameTrip}</Card.Title>
                                 <Card.Text style={{fontSize: "14px"}} >{this.state.detailActiveTrip.country}</Card.Text>
                                 <Card.Text style={{fontSize: "14px"}} >duration {this.state.detailActiveTrip.duration}</Card.Text>
-                                <Card.Text><Badge variant="secondary">start date {this.state.startDate}</Badge></Card.Text>
+                                <Card.Text><Badge variant="secondary">start date {this.state.detailActiveTrip.startDate}</Badge></Card.Text>
                                 <Form.Group style={{textAlign: "end"}}>
                                 <Link to={{
                                         pathname: "/ActiveSpecificTrip",

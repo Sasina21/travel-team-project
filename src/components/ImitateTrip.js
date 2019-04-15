@@ -20,7 +20,6 @@ class ImitateTrip extends Component {
           nameCompany:'',
           displayName:'',
           idGroup:'',
-          dataTrip: null,
         };
         this.handleChangeStart = this.handleChangeStart.bind(this);
         this.handleChangeEnd = this.handleChangeEnd.bind(this);
@@ -79,6 +78,17 @@ class ImitateTrip extends Component {
       // console.log(this.state.displayName)
     }
     
+    readPicfirst(idGroup){
+      let dbCon = firebase.database().ref('Groups/')
+      let pathFirstpic = firebase.database().ref('Companies/' + this.state.idCompany + '/Trips/' + this.props.location.state.idTrip + '/picfirst');
+          pathFirstpic.once("value")
+            .then(snapshot => {
+              console.log(snapshot.val())
+              dbCon.child(idGroup).update({
+                picfirst: snapshot.val()
+              })
+            })
+    }
       
     async insertDataTrip(){
       var startDate =  await document.getElementById('startDate').value
@@ -90,26 +100,26 @@ class ImitateTrip extends Component {
         duration: this.props.location.state.duration,
         idTrip: this.props.location.state.idTrip,
         idGuide: this.state.myid,
-        // nameTrip: this.state.dataTrip.nameTrip,
+        nameTrip: this.props.location.state.nameTrip,
+        country: this.props.location.state.country,
       }).key
       this.setState({
         idGroup: idGroup,
       })
-      let pathFirstpic = firebase.database().ref('Trips/' + this.props.location.state.idTrip + '/picfirst');
-          pathFirstpic.once("value")
-            .then(snapshot => {
-              dbCon.child(idGroup).update({
-                picfirst: snapshot.val()
-              })
-            })
+      this.readPicfirst(idGroup)
+      // let pathFirstpic = firebase.database().ref('Trips/' + this.props.location.state.idTrip + '/picfirst');
+      //     pathFirstpic.once("value")
+      //       .then(snapshot => {
+      //         dbCon.child(idGroup).update({
+      //           picfirst: snapshot.val()
+      //         })
+      //       })
 
       var dbTrip = firebase.database().ref('Trips/' + this.props.location.state.idTrip)
       dbTrip.once("value")
         .then(snapshot => {
           dbCon.child(idGroup).update({
-            nameTrip: snapshot.val().nameTrip,
             Detail: snapshot.val().Detail,
-            country: snapshot.val().country
           })
         })
       dbCon.child(idGroup).update({
@@ -158,13 +168,13 @@ class ImitateTrip extends Component {
                         />
                     </Form.Group>
                     
-                    <Button onClick={this.insertDataTrip} variant="dark" type="submit">Done</Button>
+                    <Button onClick={this.insertDataTrip} variant="dark" type="submit">Next</Button>
                     {
-                      this.state.idGroup && 
+                      this.state.idGroup &&
                       <Redirect to={{
                         pathname:'/AddMember',
                         state:{
-                          idGroup: this.state.idGroup
+                          idGroup: this.state.idGroup,
                         }
                       }}/>
                     }

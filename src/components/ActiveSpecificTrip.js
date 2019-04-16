@@ -123,7 +123,7 @@ componentWillUpdate(nextProps, nextState){
               console.log(item.activeTrip.idGroup)
               if(item.activeTrip.idGroup == this.props.location.state.idGroup){
                 dbUser.child(item.useruid + '/oldTrip').push({
-                  idTrip: this.props.location.state.idGroup
+                  idGroup: this.props.location.state.idGroup
                 })
                 dbUser.child(item.useruid + '/activeTrip').remove()
               }

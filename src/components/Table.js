@@ -14,7 +14,6 @@ class TableSchedul extends Component {
         }
         this.componentWillMount = this.componentWillMount.bind(this)
     }
-
     buildOptionsDuration() {
         var arr = [];
         for (let i = 1; i <= this.props.duration ; i++) {
@@ -111,6 +110,7 @@ class TableSchedul extends Component {
         }
             
     }
+    
 
     render(){
         // console.log('render '+this.state.dataTrip)

@@ -59,7 +59,7 @@ class ImitateTrip extends Component {
       var user = firebase.auth().currentUser;
       this.setState({
         myid: user.uid,
-        displayName: user.displayName,
+        displayName: user.email,
       })
       var id_company= await firebase.database().ref("Guides/" + user.uid );
       id_company.once("value")
@@ -80,11 +80,15 @@ class ImitateTrip extends Component {
     
     readPicfirst(idGroup){
       let dbCon = firebase.database().ref('Groups/')
+      let dbCompany = firebase.database().ref('/Companies/' + this.state.idCompany + '/activeTrip/' + idGroup)
       let pathFirstpic = firebase.database().ref('Companies/' + this.state.idCompany + '/Trips/' + this.props.location.state.idTrip + '/picfirst');
           pathFirstpic.once("value")
             .then(snapshot => {
               console.log(snapshot.val())
               dbCon.child(idGroup).update({
+                picfirst: snapshot.val()
+              })
+              dbCompany.update({
                 picfirst: snapshot.val()
               })
             })
@@ -115,6 +119,17 @@ class ImitateTrip extends Component {
       //         })
       //       })
 
+      let dbCompany = firebase.database().ref('/Companies/' + this.state.idCompany + '/activeTrip/' + idGroup)
+      dbCompany.update({
+        startDate: startDate,
+        idGroup: idGroup,
+        country: this.props.location.state.country,
+        duration: this.props.location.state.duration,
+        nameTrip: this.props.location.state.nameTrip,
+        idTrip: this.props.location.state.idTrip,
+        // picfirst: snapshot.val().picfirst
+      })
+
       var dbTrip = firebase.database().ref('Trips/' + this.props.location.state.idTrip)
       dbTrip.once("value")
         .then(snapshot => {
@@ -132,10 +147,6 @@ class ImitateTrip extends Component {
       // })
       let dbGuide = firebase.database().ref('/Guides/' + this.state.myid + '/activeTrip/')
       dbGuide.update({
-        idGroup: idGroup
-      })
-      let dbCompany = firebase.database().ref('/Companies/' + this.state.idCompany + '/activeTrip/' + idGroup)
-      dbCompany.update({
         idGroup: idGroup
       })
 

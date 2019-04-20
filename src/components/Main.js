@@ -1,64 +1,73 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
-import { Button, Card, Form, Row, Col, Carousel, Nav} from 'react-bootstrap'
+import React, { Component } from 'react'
 import firebase from '../firebase'
-// import Navbar from './Navbar'
-// Configure Firebase.
+import Navbar from './Navbar'
+import { Button, Card, Form, Row, Col, Badge, Nav, Carousel} from 'react-bootstrap'
+import { Link, Redirect } from 'react-router-dom'
+// import { SyncWaterfallHook } from 'tapable';
 
-class Main extends React.Component {
-    constructor(props, context){
-        super(props, context);
+class Main extends Component {
+    constructor(props){
+        super(props);
         this.state={
             dataTrip: null,
-            isSignedIn: false,
-            myid: '',
-            idCompany:'',
-            displayName:'',
             alreadyReaddata: false,
-            detailActiveTrip: null,
+            detailActiveTrip: '',
             alreadyReadActive: false,
             startDate: '',
-            idActiveTrip: '',
-            idActiveGroup: '',
-            picActiveTrip: '',
+
         }
         this.readData = this.readData.bind(this)
+        this.componentDidMount = this.componentDidMount.bind(this)
         
     };
-    componentWillMount(){
-        this.readData()
+
+    componentDidMount() {
+        this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
+            (user) => this.setState({isSignedIn: !!user})
+        );
+      }
+
+    componentWillUnmount() {
+        this.unregisterAuthObserver();
     }
 
     async readData(){
-        var arr = []
-        var dbUser= await firebase.database().ref("Companies/00001/activeTrip")
-            dbUser.once("value")
-                    .then(snapshot => {
-                      if(snapshot.val() !== null){
-                        console.log(Object.values(snapshot.val()))
-                        Object.values(snapshot.val()).map((item,index) => {
-                          console.log(item.idGroup)
-                          var dbGroup = firebase.database().ref("Groups/" + item.idGroup )
-                            dbGroup.once("value")
-                              .then(snapshot => {
-                                arr.push(snapshot.val())
-                              })
-                        })
-                        this.setState({
-                            dataTrip: arr,
-                            alreadyReaddata: true
-                        })
-                        console.log(this.state.dataTrip)
-                      }
-                    })
+        // console.log('read data')
+        var rootRef = await firebase.database().ref("Companies/00001/activeTrip");
+        rootRef.once("value")
+            .then(snapshot => {
+                // var key = snapshot.key; // null
+                // var childKey = snapshot.child("users/ada").key; // "ada"
+                // console.log(Object.values(snapshot.val()))
+                if(snapshot.val() != null){
+                    this.setState({
+                        dataTrip: Object.values(snapshot.val()),
+                        alreadyReaddata: true,
+                    })   
+                }
+            });
+        
     }
-  
-  render() {
-      if(this.state.dataTrip){
 
-          return(
-              <div>
-                  <Carousel style={{marginLeft: '150px', marginRight: '150px', marginTop: '50px'}} >
+
+    componentWillUpdate(nextProps, nextState){
+        if (nextState.isSignedIn === true && this.state.isSignedIn === false) {
+          return true
+        }else{
+            return true
+        }
+      }
+    
+    
+    render(){
+        if( !this.state.alreadyReaddata){
+            this.readData()
+            
+        }
+        if (this.state.alreadyReaddata){
+            return(
+                <div>
+                    <Carousel style={{marginLeft: '150px', marginRight: '150px', marginTop: '50px'}} >
                        <Carousel.Item>
                        <img
                            className="d-block w-100"
@@ -94,10 +103,10 @@ class Main extends React.Component {
                             <Nav.Link href="/Login">Guide SignIn</Nav.Link>
                         </Nav.Item>
                     </Nav>
-       
-                  <Row style={{marginTop: "30px",marginLeft: "70px", marginRight: "50px"}}>
+                    <Row style={{marginTop: "30px",marginLeft: "70px", marginRight: "50px"}}>
                        {
                            this.state.dataTrip && this.state.dataTrip.map((item, index) => {
+                               console.log(item.duration)
                                return (
                                <Col key={index} sm={3}>
                                <Card style={{ width: '18rem' , height: "25rem" , marginBottom: "25px"}}>
@@ -106,14 +115,16 @@ class Main extends React.Component {
                                        <Card.Title >{item.nameTrip}</Card.Title>
                                        <Card.Text style={{fontSize: "14px"}} >{item.country}</Card.Text>
                                        <Card.Text style={{fontSize: "14px"}} >Duration: {item.duration}</Card.Text>
+                                       <Card.Text><Badge variant="secondary">start date {item.startDate}</Badge></Card.Text>
                                        <Form.Group style={{textAlign: "end"}}>
                                        <Link to={{
-                                           pathname: "/SpecificTrip",
+                                           pathname: "/ActiveSpecificTrip",
                                            state: {
-                                               idTrip: item.idTrip,
+                                               idGroup: item.idGroup,
                                                duration: item.duration,
                                                nameTrip: item.nameTrip,
-                                               country: item.country
+                                               country: item.country,
+                                               idTrip: item.idTrip,
                                            }
                                            }}>
                                            <Button variant="warning">Detail</Button></Link>
@@ -125,13 +136,17 @@ class Main extends React.Component {
                            })
                        }
                    </Row>
-              </div>
-          )
-      }else{
-          return(
-              <div></div>
-          )
-      }
-  }
+                
+            </div>
+            )
+        }else{
+            return(
+                <div style={{textAlign: "center", marginTop: "50px"}}>
+                
+                </div>
+            )
+        }
+    }
+
 }
 export default Main

@@ -58,7 +58,7 @@ componentWillUpdate(nextProps, nextState){
     var user = firebase.auth().currentUser;
     this.setState({
       myid: user.uid,
-      displayName: user.displayName,
+      displayName: user.email,
     })
     var id_company= await firebase.database().ref("Guides/" + user.uid );
     id_company.once("value")

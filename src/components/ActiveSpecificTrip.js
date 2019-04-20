@@ -84,7 +84,7 @@ componentWillUpdate(nextProps, nextState){
       dbTrips.remove()
       let dbGuide = firebase.database().ref('Guides/' + this.state.myid + '/activeTrip/idGroup')
       dbGuide.remove()
-      let dbCompany = firebase.database().ref('Companies/' +this.state.idCompany  + '/activeTrip/' + this.props.location.state.idGroup)
+      let dbCompany = firebase.database().ref('Companies/00001/activeTrip/' + this.props.location.state.idGroup)
       dbCompany.remove()
 
       let dbUser = firebase.database().ref('Users/')
@@ -109,7 +109,7 @@ componentWillUpdate(nextProps, nextState){
     }
 
     terminateTrip(){
-      let dbCompany = firebase.database().ref('Companies/' +this.state.idCompany  + '/activeTrip/' + this.props.location.state.idGroup)
+      let dbCompany = firebase.database().ref('Companies/00001/activeTrip/' + this.props.location.state.idGroup)
       dbCompany.remove()
       let dbGuide = firebase.database().ref('Guides/' + this.state.myid)
       dbGuide.child('oldTrip').push({
@@ -140,20 +140,33 @@ componentWillUpdate(nextProps, nextState){
       })
     }
 
+    goBack(){
+      this.props.history.goBack();
+    }
+
     render(){
-      console.log(this.state.idCompany)
       console.log('idTrip ' +this.props.location.state.idTrip)
         return(
           <div>
-            <Navbar displayName={this.state.displayName}></Navbar>
+            {
+              this.state.idCompany && <Navbar displayName={this.state.displayName}></Navbar>
+            }
             <div className="container" style={{marginTop: "30px"}}>
-              <Form.Group style={{textAlign: "end"}}>
-                <Button onClick={this.handleChangeDelete} variant="danger" style={{marginRight: "10px"}}>Delete</Button>
-                <Button onClick={this.handleChangeTerminate} variant="dark" style={{marginRight: "10px"}}>Terminate</Button>
-              </Form.Group>
-              <TableScheDule fromgroup={this.props.location.state.idGroup} duration={this.props.location.state.duration} idTrip={this.props.location.state.idGroup}></TableScheDule>
+            {
+              this.state.idCompany && 
+              (<Form.Group style={{textAlign: "end"}}>
+              <Button onClick={this.handleChangeDelete} variant="danger" style={{marginRight: "10px"}}>Delete</Button>
+              <Button onClick={this.handleChangeTerminate} variant="dark" style={{marginRight: "10px"}}>Terminate</Button>
+            </Form.Group>)
+            }
 
-              <Form.Group style={{textAlign: "end"}}>
+            <Form.Group style={{textAlign: "end"}}>
+              <Button onClick={() => this.goBack()} variant="dark" style={{marginRight: "10px"}}>Back</Button>
+            </Form.Group>
+              <TableScheDule fromgroup={this.props.location.state.idGroup} duration={this.props.location.state.duration} idTrip={this.props.location.state.idGroup}></TableScheDule>
+              {
+                this.state.idCompany && 
+                (<Form.Group style={{textAlign: "end"}}>
                 <Link to={{
                     pathname:"/DetailCreateTrip",
                     state:{
@@ -174,7 +187,9 @@ componentWillUpdate(nextProps, nextState){
                     }}>
                     <Button variant="dark" style={{marginRight: "10px"}}>Add Member</Button>
                   </Link>
-              </Form.Group>
+              </Form.Group>)
+              }
+              
 
             </div>
             {

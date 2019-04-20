@@ -23,6 +23,7 @@ class DetailCreateTrip extends Component {
       idCompany:'',
       displayName:'',
       dataDetailTrip: '',  
+      refreshTable: false,
     };
     this.handleChangePic = this.handleChangePic.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
@@ -173,6 +174,7 @@ class DetailCreateTrip extends Component {
           progress: 0,
           endDate:'',
           startDate: '',
+          refreshTable: true,
       });
       // if(!this.state.picfirst){
       //   let picpath = firebase.database().ref('Companies/' + this.state.idCompany +'/Trips/' + this.props.location.state.idTrip);
@@ -239,7 +241,7 @@ class DetailCreateTrip extends Component {
     var user = firebase.auth().currentUser;
     this.setState({
       myid: user.uid,
-      displayName: user.displayName,
+      displayName: user.email,
     })
     var id_company= await firebase.database().ref("Guides/" + user.uid );
     id_company.once("value")
@@ -400,7 +402,7 @@ class DetailCreateTrip extends Component {
               pathname: "/MyTrips"
             }}></Redirect>}
           </div>
-          <TableSchedule fromgroup={this.props.location.state.idGroup} duration={this.props.location.state.duration} idTrip={this.props.location.state.idTrip || this.props.location.state.idGroup}></TableSchedule>
+          <TableSchedule refreshTable={this.state.refreshTable} fromgroup={this.props.location.state.idGroup} duration={this.props.location.state.duration} idTrip={this.props.location.state.idTrip || this.props.location.state.idGroup}></TableSchedule>
         </div>
         )
       }else if(!this.state.isSignedIn){

@@ -134,6 +134,11 @@ class ImitateTrip extends Component {
       dbGuide.update({
         idGroup: idGroup
       })
+      let dbCompany = firebase.database().ref('/Companies/' + this.state.idCompany + '/activeTrip/' + idGroup)
+      dbCompany.update({
+        idGroup: idGroup
+      })
+
     }
     
     render(){

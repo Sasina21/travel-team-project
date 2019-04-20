@@ -152,7 +152,7 @@ class ImitateTrip extends Component {
                     this.state.members && this.state.members.map((item, index) => {
                       // this.state.readytoDelete && this.deleteMember(item.idPushMem, item.idUser)
                       return(
-                        <ListGroup.Item><Button  variant="danger" >Delete</Button> {item.email}</ListGroup.Item>
+                        <ListGroup.Item><Button onClick={() => this.deleteMember(item.idPushMem, item.useruid)} variant="danger" >Delete</Button> {item.email}</ListGroup.Item>
                       )
                       
                     })

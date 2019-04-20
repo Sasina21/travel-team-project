@@ -63,7 +63,7 @@ componentWillUpdate(nextProps, nextState){
     var user = firebase.auth().currentUser;
     this.setState({
       myid: user.uid,
-      displayName: user.displayName,
+      displayName: user.email,
     })
     var id_company= await firebase.database().ref("Guides/" + user.uid );
     id_company.once("value")
@@ -82,8 +82,10 @@ componentWillUpdate(nextProps, nextState){
       dbGroups.remove()
       let dbTrips = firebase.database().ref('Trips/' + this.props.location.state.idTrip + '/Groups/' + this.props.location.state.idGroup)
       dbTrips.remove()
-      let dbGuide = firebase.database().ref('Guides/' + this.state.myid + '/activeTrip')
+      let dbGuide = firebase.database().ref('Guides/' + this.state.myid + '/activeTrip/idGroup')
       dbGuide.remove()
+      let dbCompany = firebase.database().ref('Companies/' +this.state.idCompany  + '/activeTrip/' + this.props.location.state.idGroup)
+      dbCompany.remove()
 
       let dbUser = firebase.database().ref('Users/')
       dbUser.once("value")
@@ -107,6 +109,8 @@ componentWillUpdate(nextProps, nextState){
     }
 
     terminateTrip(){
+      let dbCompany = firebase.database().ref('Companies/' +this.state.idCompany  + '/activeTrip/' + this.props.location.state.idGroup)
+      dbCompany.remove()
       let dbGuide = firebase.database().ref('Guides/' + this.state.myid)
       dbGuide.child('oldTrip').push({
         idGroup: this.props.location.state.idGroup

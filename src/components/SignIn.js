@@ -31,7 +31,6 @@ class SignInScreen extends React.Component {
     signInFlow: 'popup',
     // We will display Google and Facebook as auth providers.
     signInOptions: [
-      firebase.auth.FacebookAuthProvider.PROVIDER_ID,
       {
         provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
         // Whether the display name should be displayed in the Sign Up page.

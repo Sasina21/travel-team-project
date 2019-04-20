@@ -13,13 +13,15 @@ import ImitateTrip from './components/ImitateTrip'
 import Login from './components/SignIn'
 import NotGuide from './components/NotGuide'
 import AddMember from './components/AddMember'
+import Main from './components/Main'
 
 class App extends Component {
   render() {
     return (
       <BrowserRouter>
         <Switch>
-          <Route exact path="/" component={Login} />
+          <Route exact path="/" component={Main} />
+          <Route exact path="/Login" component={Login} />
           <Route exact path="/MyTrips" component={MyTrips} />
           <Route exact path="/CreateTrip" component={CreateTrip} />
           <Route exact path="/Table" component={Table} />

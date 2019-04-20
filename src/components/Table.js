@@ -53,7 +53,8 @@ class TableSchedul extends Component {
                                 state:({
                                     dataTripOnLocation: this.state.dataTrip[i],
                                     fromgroup: this.props.fromgroup,
-                                    idTrip: this.props.idTrip
+                                    idTrip: this.props.idTrip,
+                                    duration: this.props.duration,
                                     })
                                 }}>
                                 <Image style={{height:'auto'}} src={this.state.dataTrip[i].picture} fluid />{this.state.dataTrip[i].location}</Link>

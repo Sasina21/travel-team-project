@@ -142,35 +142,34 @@ class MyTrips extends Component {
                 <div>
                 <Navbar displayName = {this.state.displayName} />
                 {
-                        this.state.detailActiveTrip.nameTrip && (
-                        <Row style={{marginTop: "30px",marginLeft: "70px", marginRight: "50px"}}>   
+                    this.state.detailActiveTrip.nameTrip && (
+                    <Row style={{marginTop: "30px",marginLeft: "70px", marginRight: "50px"}}>   
                         <Col sm={3}>
-                        <Card style={{ width: '18rem' , marginBottom: "25px"}}>
-                            <Card.Img style={{maxWidth:"18rem"}} variant="top" src={this.state.picActiveTrip} />
-                            <Card.Body>
-                                <Card.Title >{this.state.detailActiveTrip.nameTrip}</Card.Title>
-                                <Card.Text style={{fontSize: "14px"}} >{this.state.detailActiveTrip.country}</Card.Text>
-                                <Card.Text style={{fontSize: "14px"}} >duration {this.state.detailActiveTrip.duration}</Card.Text>
-                                <Card.Text><Badge variant="secondary">start date {this.state.detailActiveTrip.startDate}</Badge></Card.Text>
-                                <Form.Group style={{textAlign: "end"}}>
-                                <Link to={{
-                                        pathname: "/ActiveSpecificTrip",
-                                        state: {
-                                            idTrip: this.state.idActiveTrip,
-                                            duration: this.state.detailActiveTrip.duration,
-                                            nameTrip: this.state.detailActiveTrip.nameTrip,
-                                            country: this.state.detailActiveTrip.country,
-                                            idGroup: this.state.idActiveGroup,
-                                        }
-                                        }}><Button variant="warning">Detail</Button></Link>
-                                </Form.Group>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                    
+                            <Card style={{ width: '18rem' , marginBottom: "25px"}}>
+                                <Card.Img style={{maxWidth:"18rem"}} variant="top" src={this.state.picActiveTrip} />
+                                <Card.Body>
+                                    <Card.Title >{this.state.detailActiveTrip.nameTrip}</Card.Title>
+                                    <Card.Text style={{fontSize: "14px"}} >{this.state.detailActiveTrip.country}</Card.Text>
+                                    <Card.Text style={{fontSize: "14px"}} >duration {this.state.detailActiveTrip.duration}</Card.Text>
+                                    <Card.Text><Badge variant="secondary">start date {this.state.detailActiveTrip.startDate}</Badge></Card.Text>
+                                    <Form.Group style={{textAlign: "end"}}>
+                                    <Link to={{
+                                            pathname: "/ActiveSpecificTrip",
+                                            state: {
+                                                idTrip: this.state.idActiveTrip,
+                                                duration: this.state.detailActiveTrip.duration,
+                                                nameTrip: this.state.detailActiveTrip.nameTrip,
+                                                country: this.state.detailActiveTrip.country,
+                                                idGroup: this.state.idActiveGroup,
+                                            }
+                                            }}><Button variant="warning">Detail</Button></Link>
+                                    </Form.Group>
+                                </Card.Body>
+                            </Card>
+                        </Col>
                     </Row>
                     )
-                    }
+                }
                 
                 <hr/>
 

@@ -11,8 +11,10 @@ class TableSchedul extends Component {
             dataTrip: null,
             dataTripCheck: false,
             alreadyReaddata: false,
+            refresh: '',
         }
         this.componentWillMount = this.componentWillMount.bind(this)
+        this.componentDidUpdate = this.componentDidUpdate.bind(this)
     }
     buildOptionsDuration() {
         var arr = [];
@@ -32,11 +34,19 @@ class TableSchedul extends Component {
         return arr;
     }
 
-    
+    componentDidUpdate(prevProps){
+        if(prevProps.idTripDetail !== this.props.idTripDetail){
+            this.componentWillMount()
+            this.setState({          
+                refresh: this.props.idTripDetail
+            });
+        }
+    }
+
     createTable(day){
         var arr = []
         var check =[]
-        console.log(this.state.dataTrip)
+        console.log(this.state.refresh)
         this.buildOptionsTime().map((time, index) => {
             for(let i = 0 ; i < this.state.dataTrip.length ; i++){
                 // console.log('index' +index)

@@ -115,7 +115,7 @@ componentWillUpdate(nextProps, nextState){
       dbGuide.child('oldTrip').push({
         idGroup: this.props.location.state.idGroup
       })
-      dbGuide.child('activeTrip').remove()
+      dbGuide.child('activeTrip/idGroup').remove()
     
       let dbUser = firebase.database().ref('Users/')
       dbUser.once("value")
@@ -129,7 +129,7 @@ componentWillUpdate(nextProps, nextState){
                 dbUser.child(item.useruid + '/oldTrip').push({
                   idGroup: this.props.location.state.idGroup
                 })
-                dbUser.child(item.useruid + '/activeTrip').remove()
+                dbUser.child(item.useruid + '/activeTrip/idGroup').remove()
               }
             }
         })

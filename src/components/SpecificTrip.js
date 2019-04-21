@@ -85,7 +85,7 @@ componentWillUpdate(nextProps, nextState){
     }
 
     activeTripCheck(){
-      var checkActive= firebase.database().ref("Guides/" + this.state.myid + '/activeTrip' );
+      var checkActive= firebase.database().ref("Guides/" + this.state.myid + '/activeTrip/idGroup' );
       checkActive.once("value")
             .then(snapshot => {
               console.log('can active ' +snapshot.val())

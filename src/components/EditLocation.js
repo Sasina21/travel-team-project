@@ -209,7 +209,7 @@ class EditLocation extends Component {
             arr.push(i+':00 ')
             arr.push(i+':30 ')
         }
-        arr.push('0:00')
+        arr.push('24:00')
         return arr;
     }
     render(){

@@ -125,10 +125,11 @@ class ImitateTrip extends Component {
       let dbGroup = firebase.database().ref('Groups/' + this.props.location.state.idGroup + '/members/' + idPushMem)
       dbGroup.remove()
 
-      let dbUser = firebase.database().ref('Users/' + idUser +  '/activeTrip')
+      let dbUser = firebase.database().ref('Users/' + idUser +  '/activeTrip/idGroup')
       dbUser.remove()
 
       this.readMember()
+      this.forceUpdate()
     }
     
     

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import firebase from '../firebase'
-import { Table , Image, Badge, Button} from 'react-bootstrap'
+import { Table , Image} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 class TableSchedul extends Component {
@@ -30,7 +30,7 @@ class TableSchedul extends Component {
             arr.push(i+':00 ')
             arr.push(i+':30 ')
         }
-        arr.push('0:00')
+        arr.push('24:00')
         return arr;
     }
 
@@ -66,7 +66,7 @@ class TableSchedul extends Component {
                                     duration: this.props.duration,
                                     })
                                 }}>
-                                <Image style={{height:'auto'}} src={this.state.dataTrip[i].picture} fluid />{this.state.dataTrip[i].location}</Link>
+                                <Image style={{maxHeight:'120px'}} src={this.state.dataTrip[i].picture} fluid /><br/>{this.state.dataTrip[i].location}</Link>
                         </td>
                         for(let j = 1 ; j < durationTime ; j++){
                             check[index+j] = 'fill'

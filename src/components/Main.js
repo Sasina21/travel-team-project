@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import firebase from '../firebase'
 import Navbar from './Navbar'
 import { Button, Card, Form, Row, Col, Badge, Nav, Carousel} from 'react-bootstrap'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 // import { SyncWaterfallHook } from 'tapable';
 
 class Main extends Component {
@@ -71,7 +71,7 @@ class Main extends Component {
                        <Carousel.Item>
                        <img
                            className="d-block w-100"
-                           src="https://firebasestorage.googleapis.com/v0/b/project-190f0.appspot.com/o/Screen%20Shot%202562-04-20%20at%2022.37.45.png?alt=media&token=798b074a-168f-4175-8f67-df617774b6ed"
+                           src="https://firebasestorage.googleapis.com/v0/b/project-190f0.appspot.com/o/tour.png?alt=media&token=2edd98e8-b010-456b-81c6-0480d515c819"
                            alt="First slide"
                        />
                        </Carousel.Item>
@@ -94,10 +94,10 @@ class Main extends Component {
 
                    <Nav style={{marginLeft: '150px', marginRight: '150px', marginTop: '50px'}} >
                         <Nav.Item>
-                            <Nav.Link href="/">วิธีจองทัวร์</Nav.Link>
+                            <Nav.Link href="/Howtobook">วิธีจองทัวร์</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link href="/">ติดต่อเรา</Nav.Link>
+                            <Nav.Link href="/ContactUs">ติดต่อเรา</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link href="/Login">Guide SignIn</Nav.Link>
